@@ -139,7 +139,8 @@ class Tensors:
 
             if isinstance(data, tuple):
                 size = tuple(list_size) if list_size else None
-            size = list_size if list_size else None
+            else:
+                size = list_size if list_size else None
 
         # TODO: sets, generators, collections.<...>
 
