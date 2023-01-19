@@ -14,10 +14,7 @@ class AccessTensorsAttr:
 
 @dataclass
 class ObjectWithTensorsAttr:
-    """
-    Signal to `Shapes.__getitem__` that the `data.tensors`-attribute
-    should be accessed instead of `data[...]` .
-    """
+    """Allow `Shape` to represent objects with `tensor`-attribute."""
 
     name: str
     _size: Any | None
