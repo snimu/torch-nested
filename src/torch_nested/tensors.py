@@ -43,6 +43,7 @@ class Tensors:
         self.data = self._setitem_recursive(
             self.data, self._access_keys[key], value, key
         )
+        self._size, self._element_size = self._update_info()
 
     def _setitem_recursive(
         self, data: Any, steps: list[Any], value: Any, key: int
