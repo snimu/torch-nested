@@ -5,6 +5,8 @@ import torch
 
 from torch_nested import Tensors
 
+from .fixtures.classes import ObjectWithTensors
+
 
 class TestBasics:
     """Some basic tests for torch-nested.Tensors"""
@@ -14,6 +16,7 @@ class TestBasics:
         torch.ones((2, 2, 2)),
         {"foo": torch.ones(2), "bar": [], "har": "rar"},
         1,
+        ObjectWithTensors(torch.ones(3)),
     ]
 
     def test_getitem(self) -> None:
@@ -23,6 +26,7 @@ class TestBasics:
         assert torch.all(tensors[1] == torch.zeros(2))
         assert torch.all(tensors[2] == torch.ones((2, 2, 2)))
         assert torch.all(tensors[3] == torch.ones(2))
+        assert torch.all(tensors[-1] == torch.ones(3))
 
     def test_iter(self) -> None:
         tensors = Tensors(self.input_data)
@@ -33,7 +37,7 @@ class TestBasics:
     def test_next(self) -> None:
         tensors = Tensors(self.input_data)
 
-        for _ in range(4):
+        for _ in range(5):
             assert isinstance(next(tensors), torch.Tensor)
 
         with pytest.raises(StopIteration):
@@ -41,7 +45,7 @@ class TestBasics:
 
     def test_len(self) -> None:
         tensors = Tensors(self.input_data)
-        assert len(tensors) == 4
+        assert len(tensors) == 5
 
     def test_element_size(self) -> None:
         element_size = (
@@ -49,6 +53,7 @@ class TestBasics:
             + torch.zeros(2).element_size()
             + torch.ones((2, 2, 2)).element_size()
             + torch.ones(2).element_size()
+            + torch.ones(3).element_size()
         )
 
         tensors = Tensors(self.input_data)
@@ -65,6 +70,7 @@ class TestBasics:
         assert size[2]["bar"] is None  # type: ignore[index]
         assert size[2]["har"] is None  # type: ignore[index]
         assert size[3] is None  # type: ignore[index]
+        assert size[4].size == torch.Size([3])  # type: ignore[union-attr, index]
 
     def test_assignment(self) -> None:
         tensors = Tensors(self.input_data)
@@ -72,6 +78,10 @@ class TestBasics:
         tensors[2] = torch.zeros((3, 3, 3))
         assert torch.all(tensors[2] == torch.zeros(3, 3, 3))
         assert torch.all(tensors.data[1] == torch.zeros(3, 3, 3))
+
+        tensors[-1] = torch.zeros(2)
+        assert torch.all(tensors[-1] == torch.zeros(2))
+        assert torch.all(tensors.data[4].tensors == torch.zeros(2))
 
         with pytest.raises(TypeError):  # tuple should not be assignable
             tensors[0] = torch.zeros(3)

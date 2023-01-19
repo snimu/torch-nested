@@ -1,9 +1,15 @@
 from __future__ import annotations
 
 import copy
-from typing import Any, Generator, Sequence
+from typing import Any, Generator, Sequence, Union
 
 import torch
+
+from .signals_hasattr_tensors import AccessTensorsAttr, ObjectWithTensorsAttr
+
+SIZE_TYPES = Union[
+    torch.Size, Sequence[Any], dict[Any, Any], ObjectWithTensorsAttr, None
+]
 
 
 class Tensors:
@@ -12,7 +18,7 @@ class Tensors:
     def __init__(self, data: Any) -> None:
         self.data = data
 
-        self._size: torch.Size | Sequence[Any] | dict[Any, Any] | None = None
+        self._size: SIZE_TYPES = None
         self._element_size: int | None = None
         self._access_keys: list[list[Any]] = []
         self._next_index: int = 0
@@ -24,7 +30,10 @@ class Tensors:
         x = self.data
 
         for step in self._access_keys[key]:
-            x = x[step]
+            if isinstance(step, AccessTensorsAttr):
+                x = x.tensors
+            else:
+                x = x[step]
 
         # so far not achieved -> not covered by tests:
         if not isinstance(x, torch.Tensor):
@@ -47,8 +56,12 @@ class Tensors:
     def _setitem_recursive(
         self, data: Any, steps: list[Any], value: Any, key: int
     ) -> Any | None:
-        if not steps or not data:
+        if hasattr(data, "tensors"):
+            data.tensors = self._setitem_recursive(data.tensors, steps[1:], value, key)
             return data
+
+        if not steps or not data:
+            return value
 
         if len(steps) == 1:
             data[steps[0]] = value
@@ -86,7 +99,7 @@ class Tensors:
 
         return len(self._access_keys)
 
-    def size(self) -> torch.Size | dict[Any, Any] | Sequence[Any] | None:
+    def size(self) -> SIZE_TYPES:
         if self._size is None:
             self._size, self._element_size = self._extract_size(self.data, [])
         return self._size
@@ -96,18 +109,26 @@ class Tensors:
             self._size, self._element_size = self._extract_size(self.data, [])
         return self._element_size
 
-    def _extract_size(
-        self, data: Any, path: list[Any]
-    ) -> tuple[torch.Size | Sequence[Any] | dict[Any, Any] | None, int]:
+    def _extract_size(self, data: Any, path: list[Any]) -> tuple[SIZE_TYPES, int]:
+        size: SIZE_TYPES = None
+        element_size: int = 0
+
         if isinstance(data, torch.Tensor):
             self._access_keys.append(copy.deepcopy(path))
-            return data.size(), data.element_size()
-        if not hasattr(data, "__getitem__") or not data:
-            return None, 0
+            size, element_size = data.size(), data.element_size()
+
+        elif hasattr(data, "tensors"):
+            crnt_path = copy.deepcopy(path)
+            crnt_path.append(AccessTensorsAttr())
+            tensors_size, element_size = self._extract_size(data.tensors, crnt_path)
+
+            size = ObjectWithTensorsAttr(
+                data.__name__ if hasattr(data, "__name__") else "ObjectWithTensorsAttr",
+                tensors_size,
+            )
 
         if isinstance(data, dict):
             dict_size = {}
-            element_size = 0
 
             for key, val in data.items():
                 crnt_path = copy.deepcopy(path)
@@ -115,11 +136,10 @@ class Tensors:
                 dict_size[key], element_size_ = self._extract_size(val, crnt_path)
                 element_size += element_size_
 
-            return dict_size, element_size
+            size = dict_size if dict_size else None
 
         if isinstance(data, (list, tuple)):
             list_size = []
-            element_size = 0
 
             for i, item in enumerate(data):
                 crnt_path = copy.deepcopy(path)
@@ -129,9 +149,9 @@ class Tensors:
                 element_size += element_size_
 
             if isinstance(data, tuple):
-                return tuple(list_size), element_size
-            return list_size, element_size
+                size = tuple(list_size) if list_size else None
+            size = list_size if list_size else None
 
         # TODO: sets, generators, collections.<...>
 
-        return None, 0
+        return size, element_size
