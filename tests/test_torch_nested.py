@@ -8,7 +8,7 @@ from torch_nested import Tensors
 from .fixtures.classes import ObjectWithTensors
 
 
-class TestBasics:
+class TestTorchNested:
     """Some basic tests for torch-nested.Tensors"""
 
     input_data = [
