@@ -99,3 +99,7 @@ class TestTorchNested:
 
         tensors[0] = torch.zeros(3)
         assert torch.all(tensors[0] == torch.zeros(3))
+
+    def test_empty(self) -> None:
+        tensors = Tensors(None)
+        assert len(tensors) == 0
