@@ -90,3 +90,12 @@ class TestTorchNested:
 
         with pytest.raises(TypeError):  # tuple should not be assignable
             tensors[0] = torch.zeros(3)
+
+    def test_just_tensor(self) -> None:
+        tensors = Tensors(torch.ones(3))
+
+        assert torch.all(tensors[0] == torch.ones(3))
+        assert len(tensors) == 1
+
+        tensors[0] = torch.zeros(3)
+        assert torch.all(tensors[0] == torch.zeros(3))
