@@ -63,7 +63,7 @@ jobs:
     - name: pytest
       if: ${{ matrix.pytorch-version == '1.13' }}
       run: |
-        pytest --cov=torchinfo --cov-report= --durations=0
+        pytest --cov=torch_nested --cov-report= --durations=0
     - name: pytest
       if: ${{ matrix.pytorch-version != '1.13' }}
       run: |
