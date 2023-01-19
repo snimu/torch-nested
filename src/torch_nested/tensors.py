@@ -1,15 +1,12 @@
 from __future__ import annotations
 
 import copy
-from typing import Any, Generator, Sequence, Union
+from typing import Any, Generator
 
 import torch
 
 from .signals_hasattr_tensors import AccessTensorsAttr, ObjectWithTensorsAttr
-
-SIZE_TYPES = Union[
-    torch.Size, Sequence[Any], dict[Any, Any], ObjectWithTensorsAttr, None
-]
+from .type_definitions import SIZE_TYPES
 
 
 class Tensors:
