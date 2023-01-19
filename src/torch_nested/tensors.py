@@ -16,15 +16,11 @@ class Tensors:
     def __init__(self, data: Any) -> None:
         self.data = data
 
-        self._size: Size | torch.Size | None = None
-        self._element_size: int | None = None
         self._access_keys: list[list[Any]] = []
+        self._size, self._element_size = self._update_info()
         self._next_index: int = 0
 
     def __getitem__(self, key: Any) -> torch.Tensor:
-        if not self._access_keys:
-            self._size, self._element_size = self._update_info()
-
         x = self.data
 
         for step in self._access_keys[key]:
@@ -44,9 +40,6 @@ class Tensors:
         return x
 
     def __setitem__(self, key: int, value: Any) -> None:
-        if not self._access_keys:
-            self._size, self._element_size = self._update_info()
-
         self.data = self._setitem_recursive(
             self.data, self._access_keys[key], value, key
         )
@@ -92,21 +85,12 @@ class Tensors:
         return item
 
     def __len__(self) -> int:
-        if not self._access_keys:
-            self._size, self._element_size = self._update_info()
-
         return len(self._access_keys)
 
     def size(self) -> Size | torch.Size | None:
-        if self._size is None:
-            self._size, self._element_size = self._update_info()
-
         return self._size
 
     def element_size(self) -> int:
-        if self._element_size is None:
-            self._size, self._element_size = self._update_info()
-
         return self._element_size
 
     def _update_info(self) -> tuple[Size | torch.Size | None, int]:
