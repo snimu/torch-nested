@@ -5,7 +5,7 @@ from typing import Any, Generator
 
 import torch
 
-from .signals_hasattr_tensors import AccessTensorsAttr, ObjectWithTensorsAttr
+from .signals import AccessTensorsAttr, ObjectWithTensorsAttr
 from .size import Size
 from .type_definitions import SIZE_TYPES
 

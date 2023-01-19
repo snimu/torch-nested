@@ -4,7 +4,7 @@ from typing import Any
 
 import torch
 
-from .signals_hasattr_tensors import ObjectWithTensorsAttr
+from .signals import ObjectWithTensorsAttr
 from .type_definitions import SIZE_TYPES
 
 
