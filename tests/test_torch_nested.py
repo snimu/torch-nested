@@ -77,7 +77,7 @@ class TestTorchNested:
         assert size[3] is None  # type: ignore[index]
         assert size[4].tensors == torch.Size([3])  # type: ignore[union-attr, index]
 
-    def test_assignment(self) -> None:
+    def test_setitem(self) -> None:
         tensors = Tensors(self.input_data)
 
         tensors[2] = torch.zeros((3, 3, 3))
