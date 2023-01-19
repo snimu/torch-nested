@@ -108,4 +108,4 @@ class Size:
                 + closing
             )
 
-        return ""
+        return "None"

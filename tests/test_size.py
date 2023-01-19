@@ -49,7 +49,7 @@ def test_size_tensors() -> None:
 
 def test_size_undefined_size() -> None:
     size = Size([1])
-    assert str(size) == "torch_nested.Size([])"
+    assert str(size) == "torch_nested.Size([None])"
 
 
 def test_str() -> None:
