@@ -6,6 +6,7 @@ from typing import Any, Generator
 import torch
 
 from .signals_hasattr_tensors import AccessTensorsAttr, ObjectWithTensorsAttr
+from .size import Size
 from .type_definitions import SIZE_TYPES
 
 
@@ -15,14 +16,14 @@ class Tensors:
     def __init__(self, data: Any) -> None:
         self.data = data
 
-        self._size: SIZE_TYPES = None
+        self._size: Size | torch.Size | None = None
         self._element_size: int | None = None
         self._access_keys: list[list[Any]] = []
         self._next_index: int = 0
 
     def __getitem__(self, key: Any) -> torch.Tensor:
         if not self._access_keys:
-            self._size, self._element_size = self._extract_size(self.data, [])
+            self._size, self._element_size = self._update_info()
 
         x = self.data
 
@@ -44,7 +45,7 @@ class Tensors:
 
     def __setitem__(self, key: int, value: Any) -> None:
         if not self._access_keys:
-            self._size, self._element_size = self._extract_size(self.data, [])
+            self._size, self._element_size = self._update_info()
 
         self.data = self._setitem_recursive(
             self.data, self._access_keys[key], value, key
@@ -92,21 +93,30 @@ class Tensors:
 
     def __len__(self) -> int:
         if not self._access_keys:
-            self._size, self._element_size = self._extract_size(self.data, [])
+            self._size, self._element_size = self._update_info()
 
         return len(self._access_keys)
 
-    def size(self) -> SIZE_TYPES:
+    def size(self) -> Size | torch.Size | None:
         if self._size is None:
-            self._size, self._element_size = self._extract_size(self.data, [])
+            self._size, self._element_size = self._update_info()
+
         return self._size
 
     def element_size(self) -> int:
         if self._element_size is None:
-            self._size, self._element_size = self._extract_size(self.data, [])
+            self._size, self._element_size = self._update_info()
+
         return self._element_size
 
-    def _extract_size(self, data: Any, path: list[Any]) -> tuple[SIZE_TYPES, int]:
+    def _update_info(self) -> tuple[Size | torch.Size | None, int]:
+        size, element_size = self._extract_info(self.data, [])
+
+        if not isinstance(size, torch.Size):
+            return Size(size), element_size
+        return size, element_size
+
+    def _extract_info(self, data: Any, path: list[Any]) -> tuple[SIZE_TYPES, int]:
         size: SIZE_TYPES = None
         element_size: int = 0
 
@@ -117,7 +127,7 @@ class Tensors:
         elif hasattr(data, "tensors"):
             crnt_path = copy.deepcopy(path)
             crnt_path.append(AccessTensorsAttr())
-            tensors_size, element_size = self._extract_size(data.tensors, crnt_path)
+            tensors_size, element_size = self._extract_info(data.tensors, crnt_path)
 
             size = ObjectWithTensorsAttr(
                 data.__name__ if hasattr(data, "__name__") else "ObjectWithTensorsAttr",
@@ -130,7 +140,7 @@ class Tensors:
             for key, val in data.items():
                 crnt_path = copy.deepcopy(path)
                 crnt_path.append(key)
-                dict_size[key], element_size_ = self._extract_size(val, crnt_path)
+                dict_size[key], element_size_ = self._extract_info(val, crnt_path)
                 element_size += element_size_
 
             size = dict_size if dict_size else None
@@ -141,7 +151,7 @@ class Tensors:
             for i, item in enumerate(data):
                 crnt_path = copy.deepcopy(path)
                 crnt_path.append(i)
-                size_, element_size_ = self._extract_size(item, crnt_path)
+                size_, element_size_ = self._extract_info(item, crnt_path)
                 list_size.append(size_)
                 element_size += element_size_
 

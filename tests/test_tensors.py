@@ -63,6 +63,11 @@ class TestBasics:
         tensors = Tensors(self.input_data)
         size = tensors.size()
 
+        # The "type: ignore[index]"-comments are needed because
+        #   `Tensors.size()` returns a `torch_nested.size.Size`,
+        #   a `torch.Size`, or `None`, and I don't check which one
+        #   it is (because I want an exception to be raised if it is
+        #   the wrong one).
         assert size[0][0] == torch.Size([3])  # type: ignore[index]
         assert size[0][1] == torch.Size([2])  # type: ignore[index]
         assert size[1] == torch.Size([2, 2, 2])  # type: ignore[index]
