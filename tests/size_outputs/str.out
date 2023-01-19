@@ -1,0 +1,1 @@
+torch_nested.Size([(torch.Size([3]), torch.Size([2])), torch.Size([2, 2, 2]), {foo: torch.Size([2]), bar: None, har: None}, None, ObjectWithTensors(tensors: torch.Size([3]))])

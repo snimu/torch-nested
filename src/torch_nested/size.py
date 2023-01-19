@@ -49,7 +49,7 @@ class Size:
             content = self._create_text(self._size, spacing=" " * 2, newline=newline)
             closing = "\n)\n"
         else:
-            opening = "torch.nested.Size("
+            opening = "torch_nested.Size("
             content = self._create_text(self._size, spacing="", newline=newline)
             closing = ")"
 
