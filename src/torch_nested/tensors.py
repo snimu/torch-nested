@@ -129,10 +129,7 @@ class Tensors:
             crnt_path.append(AccessTensorsAttr())
             tensors_size, element_size = self._extract_info(data.tensors, crnt_path)
 
-            size = ObjectWithTensorsAttr(
-                data.__name__ if hasattr(data, "__name__") else "ObjectWithTensorsAttr",
-                tensors_size,
-            )
+            size = ObjectWithTensorsAttr(type(data).__qualname__, tensors_size)
 
         if isinstance(data, dict):
             dict_size = {}
