@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -18,4 +20,8 @@ class ObjectWithTensorsAttr:
     """
 
     name: str
-    size: Any
+    _size: Any | None
+
+    @property
+    def tensors(self) -> Any | None:
+        return self._size

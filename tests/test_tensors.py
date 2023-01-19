@@ -70,7 +70,7 @@ class TestBasics:
         assert size[2]["bar"] is None  # type: ignore[index]
         assert size[2]["har"] is None  # type: ignore[index]
         assert size[3] is None  # type: ignore[index]
-        assert size[4].size == torch.Size([3])  # type: ignore[union-attr, index]
+        assert size[4].tensors == torch.Size([3])  # type: ignore[union-attr, index]
 
     def test_assignment(self) -> None:
         tensors = Tensors(self.input_data)
