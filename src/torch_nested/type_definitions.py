@@ -7,5 +7,5 @@ import torch
 from .type_signals import ObjectWithTensorsAttr
 
 SIZE_TYPES = Optional[
-    Union[torch.Size, Sequence[Any], Dict[Any, Any], ObjectWithTensorsAttr]
+    Union[torch.Size, Sequence[Any], Dict[Any, Any], ObjectWithTensorsAttr, int]
 ]

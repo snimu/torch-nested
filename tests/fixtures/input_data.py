@@ -9,5 +9,5 @@ INPUT_DATA = [
     torch.ones((2, 2, 2)),
     {"foo": torch.ones(2), "bar": [], "har": "rar"},
     1,
-    ObjectWithTensors(torch.ones(3)),
+    ObjectWithTensors(torch.ones((3, 3))),
 ]

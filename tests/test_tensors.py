@@ -15,7 +15,7 @@ def test_getitem() -> None:
     assert torch.all(tensors[1] == torch.zeros(2))
     assert torch.all(tensors[2] == torch.ones((2, 2, 2)))
     assert torch.all(tensors[3] == torch.ones(2))
-    assert torch.all(tensors[-1] == torch.ones(3))
+    assert torch.all(tensors[-1] == torch.ones(3, 3))
 
 
 def test_iter() -> None:
@@ -46,7 +46,7 @@ def test_element_size() -> None:
         + torch.zeros(2).element_size()
         + torch.ones((2, 2, 2)).element_size()
         + torch.ones(2).element_size()
-        + torch.ones(3).element_size()
+        + torch.ones((3, 3)).element_size()
     )
 
     tensors = NestedTensors(INPUT_DATA)
@@ -69,7 +69,7 @@ def test_size() -> None:
     assert size[2]["bar"] is None  # type: ignore[index]
     assert size[2]["har"] is None  # type: ignore[index]
     assert size[3] is None  # type: ignore[index]
-    assert size[4].tensors == torch.Size([3])  # type: ignore[union-attr, index]
+    assert size[4].tensors == torch.Size([3, 3])  # type: ignore[union-attr, index]
 
 
 def test_setitem() -> None:

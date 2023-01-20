@@ -15,7 +15,7 @@ class NestedSize:
         self._size = size
 
     def __getitem__(self, item: Any) -> Any:
-        if self._size is None:
+        if self._size is None or isinstance(self._size, int):
             raise AttributeError("`None` has no attribute `__getitem__`")
 
         if isinstance(self._size, ObjectWithTensorsAttr):
@@ -58,7 +58,7 @@ class NestedSize:
     def _create_text(self, size: Any | None, spacing: str, newline: bool) -> str:
         if size is None:
             return "None"
-        if isinstance(size, torch.Size):
+        if isinstance(size, (torch.Size, int)):
             return str(size)
 
         # The seperator after an opening (e.g. "[" or "{")
