@@ -8,7 +8,7 @@ from .signals import ObjectWithTensorsAttr
 from .type_definitions import SIZE_TYPES
 
 
-class Size:
+class NestedSize:
     """TODO"""
 
     def __init__(self, size: SIZE_TYPES) -> None:

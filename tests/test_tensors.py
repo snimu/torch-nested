@@ -3,13 +3,13 @@ from __future__ import annotations
 import pytest
 import torch
 
-from torch_nested import Tensors
+from torch_nested import NestedTensors
 
 from .fixtures.input_data import INPUT_DATA
 
 
 def test_getitem() -> None:
-    tensors = Tensors(INPUT_DATA)
+    tensors = NestedTensors(INPUT_DATA)
 
     assert torch.all(tensors[0] == torch.ones(3))
     assert torch.all(tensors[1] == torch.zeros(2))
@@ -19,14 +19,14 @@ def test_getitem() -> None:
 
 
 def test_iter() -> None:
-    tensors = Tensors(INPUT_DATA)
+    tensors = NestedTensors(INPUT_DATA)
 
     for tensor in tensors:
         assert isinstance(tensor, torch.Tensor)
 
 
 def test_next() -> None:
-    tensors = Tensors(INPUT_DATA)
+    tensors = NestedTensors(INPUT_DATA)
 
     for _ in range(5):
         assert isinstance(next(tensors), torch.Tensor)
@@ -36,7 +36,7 @@ def test_next() -> None:
 
 
 def test_len() -> None:
-    tensors = Tensors(INPUT_DATA)
+    tensors = NestedTensors(INPUT_DATA)
     assert len(tensors) == 5
 
 
@@ -49,12 +49,12 @@ def test_element_size() -> None:
         + torch.ones(3).element_size()
     )
 
-    tensors = Tensors(INPUT_DATA)
+    tensors = NestedTensors(INPUT_DATA)
     assert tensors.element_size() == element_size
 
 
 def test_size() -> None:
-    tensors = Tensors(INPUT_DATA)
+    tensors = NestedTensors(INPUT_DATA)
     size = tensors.size()
 
     # The "type: ignore[index]"-comments are needed because
@@ -73,7 +73,7 @@ def test_size() -> None:
 
 
 def test_setitem() -> None:
-    tensors = Tensors(INPUT_DATA)
+    tensors = NestedTensors(INPUT_DATA)
 
     tensors[2] = torch.zeros((3, 3, 3))
     assert torch.all(tensors[2] == torch.zeros(3, 3, 3))
@@ -88,7 +88,7 @@ def test_setitem() -> None:
 
 
 def test_just_tensor() -> None:
-    tensors = Tensors(torch.ones(3))
+    tensors = NestedTensors(torch.ones(3))
 
     assert torch.all(tensors[0] == torch.ones(3))
     assert len(tensors) == 1
@@ -98,5 +98,5 @@ def test_just_tensor() -> None:
 
 
 def test_empty() -> None:
-    tensors = Tensors(None)
+    tensors = NestedTensors(None)
     assert len(tensors) == 0

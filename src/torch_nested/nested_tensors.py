@@ -5,12 +5,12 @@ from typing import Any, Generator
 
 import torch
 
+from .nested_size import NestedSize
 from .signals import AccessTensorsAttr, ObjectWithTensorsAttr
-from .size import Size
 from .type_definitions import SIZE_TYPES
 
 
-class Tensors:
+class NestedTensors:
     """TODO"""
 
     def __init__(self, data: Any) -> None:
@@ -88,17 +88,17 @@ class Tensors:
     def __len__(self) -> int:
         return len(self._access_keys)
 
-    def size(self) -> Size | torch.Size | None:
+    def size(self) -> NestedSize | torch.Size | None:
         return self._size
 
     def element_size(self) -> int:
         return self._element_size
 
-    def _update_info(self) -> tuple[Size | torch.Size | None, int]:
+    def _update_info(self) -> tuple[NestedSize | torch.Size | None, int]:
         size, element_size = self._extract_info(self.data, [])
 
         if not isinstance(size, torch.Size):
-            return Size(size), element_size
+            return NestedSize(size), element_size
         return size, element_size
 
     def _extract_info(self, data: Any, path: list[Any]) -> tuple[SIZE_TYPES, int]:
