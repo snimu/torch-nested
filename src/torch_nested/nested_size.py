@@ -45,7 +45,7 @@ class NestedSize:
 
     def _create_str_repr(self, newline: bool) -> str:
         if newline:
-            opening = "\ntorch_nested.Size(\n  "
+            opening = "torch_nested.Size(\n  "
             content = self._create_text(self._size, spacing=" " * 2, newline=newline)
             closing = "\n)\n"
         else:
