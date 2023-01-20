@@ -41,6 +41,26 @@ for i, tensor in enumerate(tensors):
 # Has basic dunders
 assert len(tensors) == 4
 assert torch.all(next(tensors) == torch.ones(3))
+```
+
+Calling `print(tensors.shape())` would yield:
+
+```
+torch_nested.Size(
+  [
+    (
+      torch.Size([3]),
+      torch.Size([2])
+    ),
+    torch.Size([2, 2, 2]),
+    {
+      foo: torch.Size([2]),
+      bar: None,
+      har: None
+    },
+    None
+  ]
+)
 
 ```
 
