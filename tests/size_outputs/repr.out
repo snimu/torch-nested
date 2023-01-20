@@ -13,6 +13,9 @@ torch_nested.Size(
     None,
     ObjectWithTensors(
       tensors: torch.Size([3, 3])
+    ),
+    ObjectWithData(
+      data: torch.Size([3, 3])
     )
   ]
 )

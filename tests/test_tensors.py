@@ -17,6 +17,7 @@ def test_getitem() -> None:
     assert torch.all(tensors[1] == torch.zeros(2))
     assert torch.all(tensors[2] == torch.ones((2, 2, 2)))
     assert torch.all(tensors[3] == torch.ones(2))
+    assert torch.all(tensors[4] == torch.ones(3, 3))
     assert torch.all(tensors[-1] == torch.ones(3, 3))
 
 
@@ -30,7 +31,7 @@ def test_iter() -> None:
 def test_next() -> None:
     tensors = NestedTensors(INPUT_DATA)
 
-    for _ in range(5):
+    for _ in range(6):
         assert isinstance(next(tensors), torch.Tensor)
 
     with pytest.raises(StopIteration):
@@ -39,7 +40,7 @@ def test_next() -> None:
 
 def test_len() -> None:
     tensors = NestedTensors(INPUT_DATA)
-    assert len(tensors) == 5
+    assert len(tensors) == 6
 
 
 def test_element_size() -> None:
@@ -48,6 +49,7 @@ def test_element_size() -> None:
         + torch.zeros(2).element_size()
         + torch.ones((2, 2, 2)).element_size()
         + torch.ones(2).element_size()
+        + torch.ones((3, 3)).element_size()
         + torch.ones((3, 3)).element_size()
     )
 
@@ -72,6 +74,7 @@ def test_size() -> None:
     assert size[2]["har"] is None  # type: ignore[index]
     assert size[3] is None  # type: ignore[index]
     assert size[4].tensors == torch.Size([3, 3])  # type: ignore[union-attr, index]
+    assert size[5].data == torch.Size([3, 3])  # type: ignore[union-attr, index]
 
 
 def test_setitem() -> None:
@@ -83,7 +86,10 @@ def test_setitem() -> None:
 
     tensors[-1] = torch.zeros(2)
     assert torch.all(tensors[-1] == torch.zeros(2))
-    assert torch.all(tensors.data[4].tensors == torch.zeros(2))
+    assert torch.all(tensors.data[5].data == torch.zeros(2))
+
+    tensors[4] = torch.zeros(2)
+    assert torch.all(tensors[4] == torch.zeros(2))
 
     with pytest.raises(TypeError):  # tuple should not be assignable
         tensors[0] = torch.zeros(3)

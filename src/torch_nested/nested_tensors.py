@@ -7,7 +7,12 @@ import torch
 
 from .nested_size import NestedSize
 from .type_definitions import SIZE_TYPES
-from .type_signals import AccessTensorsAttr, ObjectWithTensorsAttr
+from .type_signals import (
+    AccessDataAttr,
+    AccessTensorsAttr,
+    ObjectWithDataAttr,
+    ObjectWithTensorsAttr,
+)
 
 
 class NestedTensors:
@@ -26,6 +31,8 @@ class NestedTensors:
         for step in self._access_keys[key]:
             if isinstance(step, AccessTensorsAttr):
                 x = x.tensors
+            elif isinstance(step, AccessDataAttr):
+                x = x.data
             else:
                 x = x[step]
 
@@ -50,6 +57,10 @@ class NestedTensors:
     ) -> Any | None:
         if hasattr(data, "tensors"):
             data.tensors = self._setitem_recursive(data.tensors, steps[1:], value, key)
+            return data
+
+        if not isinstance(data, torch.Tensor) and hasattr(data, "data"):
+            data.data = self._setitem_recursive(data.data, steps[1:], value, key)
             return data
 
         if not steps or not data:
@@ -134,7 +145,14 @@ class NestedTensors:
 
             size = ObjectWithTensorsAttr(type(data).__qualname__, tensors_size)
 
-        if isinstance(data, dict):
+        elif hasattr(data, "data"):
+            crnt_path = copy.deepcopy(path)
+            crnt_path.append(AccessDataAttr())
+            data_size, element_size = self._extract_info(data.data, crnt_path, dim)
+
+            size = ObjectWithDataAttr(type(data).__qualname__, data_size)
+
+        elif isinstance(data, dict):
             dict_size = {}
 
             for key, val in data.items():
@@ -145,7 +163,7 @@ class NestedTensors:
 
             size = dict_size if dict_size else None
 
-        if isinstance(data, (list, tuple)):
+        elif isinstance(data, (list, tuple)):
             list_size = []
 
             for i, item in enumerate(data):

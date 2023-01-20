@@ -6,7 +6,7 @@ import pytest
 import torch
 
 from torch_nested import NestedSize, NestedTensors
-from torch_nested.type_signals import ObjectWithTensorsAttr
+from torch_nested.type_signals import ObjectWithDataAttr, ObjectWithTensorsAttr
 
 from .fixtures.input_data import INPUT_DATA
 
@@ -18,7 +18,6 @@ def test_getitem() -> None:
 
 def test_getitem_exceptions() -> None:
     size = NestedSize(None)
-
     with pytest.raises(AttributeError):
         _ = size[0]
 
@@ -27,7 +26,10 @@ def test_getitem_exceptions() -> None:
         _ = size[0]
 
     size = NestedSize(ObjectWithTensorsAttr("obj", 1))
+    with pytest.raises(AttributeError):
+        _ = size[0]
 
+    size = NestedSize(ObjectWithDataAttr("obj", 1))
     with pytest.raises(AttributeError):
         _ = size[0]
 

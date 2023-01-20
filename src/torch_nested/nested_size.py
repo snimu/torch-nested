@@ -5,7 +5,7 @@ from typing import Any
 import torch
 
 from .type_definitions import SIZE_TYPES
-from .type_signals import ObjectWithTensorsAttr
+from .type_signals import ObjectWithDataAttr, ObjectWithTensorsAttr
 
 
 class NestedSize:
@@ -21,6 +21,11 @@ class NestedSize:
         if isinstance(self._size, ObjectWithTensorsAttr):
             raise AttributeError(
                 "Indexing not possible. Please use the `.tensors`-property."
+            )
+
+        if isinstance(self._size, ObjectWithDataAttr):
+            raise AttributeError(
+                "Indexing not possible. Please use the `.data`-property."
             )
 
         try:
@@ -56,17 +61,17 @@ class NestedSize:
         return opening + content + closing
 
     def _create_text(self, size: Any | None, spacing: str, newline: bool) -> str:
-        if size is None:
-            return "None"
-        if isinstance(size, (torch.Size, int)):
-            return str(size)
-
         # The seperator after an opening (e.g. "[" or "{")
         sep0 = "\n" if newline else ""
         # The seperator after a closing (e.g. "]" or "}")
         sep1 = "\n" if newline else " "
 
-        if isinstance(size, dict):
+        if size is None:
+            text = "None"
+        elif isinstance(size, (torch.Size, int)):
+            text = str(size)
+
+        elif isinstance(size, dict):
             opening = "{" + f"{sep0}"
             closing = spacing + "}" if sep0 == "\n" else "}"
             spacing += " " * 2
@@ -78,9 +83,9 @@ class NestedSize:
                 content += self._create_text(value, spacing, newline)
                 content += f"{sep0}" if i == len(size) - 1 else f",{sep1}"
 
-            return opening + content + closing
+            text = opening + content + closing
 
-        if isinstance(size, (list, tuple)):
+        elif isinstance(size, (list, tuple)):
             opening = f"({sep0}" if isinstance(size, tuple) else f"[{sep0}"
             closing = ")" if isinstance(size, tuple) else "]"
             closing = spacing + closing if sep0 == "\n" else closing
@@ -92,20 +97,37 @@ class NestedSize:
                 content += self._create_text(item, spacing, newline)
                 content += f"{sep0}" if i == len(size) - 1 else f",{sep1}"
 
-            return opening + content + closing
+            text = opening + content + closing
 
-        if isinstance(size, ObjectWithTensorsAttr):
+        elif isinstance(size, ObjectWithTensorsAttr):
             opening = f"{size.name}({sep0}"
             opening += spacing + " " * 2 + "tensors: " if sep0 == "\n" else "tensors: "
             closing = spacing + ")" if sep0 == "\n" else ")"
             spacing += " " * 4
             content = ""
 
-            return (
+            text = (
                 opening
                 + self._create_text(size.tensors, spacing, newline)
                 + f"{sep0}"
                 + closing
             )
 
-        return "None"
+        elif isinstance(size, ObjectWithDataAttr):
+            opening = f"{size.name}({sep0}"
+            opening += spacing + " " * 2 + "data: " if sep0 == "\n" else "data: "
+            closing = spacing + ")" if sep0 == "\n" else ")"
+            spacing += " " * 4
+            content = ""
+
+            text = (
+                opening
+                + self._create_text(size.data, spacing, newline)
+                + f"{sep0}"
+                + closing
+            )
+
+        else:
+            text = "None"
+
+        return text
