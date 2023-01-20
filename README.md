@@ -2,6 +2,10 @@
 
 Easily manipulate `torch.Tensors` inside highly nested data-structures.
 
+You may want to consider using [torch.nested](https://pytorch.org/docs/stable/nested.html),
+but if you are working with nested `dicts`, `lists`, `tuples`, etc. of `torch.Tensors`, 
+here is the package for you.
+
 A proper documentation is coming. Until then, a basic example is shown below, and you can look at the docstrings 
 or tests of this package for more information.
 
