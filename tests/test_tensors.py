@@ -128,8 +128,8 @@ def test_abs() -> None:
 
 def test_abs_() -> None:
     input_data = [torch.randn(5), torch.randn(5), torch.randn(5)]
-    tensors = NestedTensors(input_data)
-    tensors_control = NestedTensors(input_data)
+    tensors = NestedTensors(copy.deepcopy(input_data))
+    tensors_control = NestedTensors(copy.deepcopy(input_data))
 
     tensors.abs_()
 
