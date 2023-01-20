@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import Any, Sequence, Union
+from typing import Any, Dict, Optional, Sequence, Union
 
 import torch
 
 from .signals import ObjectWithTensorsAttr
 
-SIZE_TYPES = Union[
-    torch.Size, Sequence[Any], dict[Any, Any], ObjectWithTensorsAttr, None
+SIZE_TYPES = Optional[
+    Union[torch.Size, Sequence[Any], Dict[Any, Any], ObjectWithTensorsAttr]
 ]
