@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import copy
-from typing import Any, Generator
+from typing import Any, Callable, Generator
 
 import torch
 
@@ -97,6 +97,12 @@ class NestedTensors:
     def element_size(self) -> int:
         return self._element_size
 
+    def abs(self) -> NestedTensors:
+        return self._exec(torch.abs)
+
+    def abs_(self) -> NestedTensors:
+        return self._exec_inplace(torch.abs)
+
     def _update_info(
         self, dim: int | None = None
     ) -> tuple[NestedSize | torch.Size | None, int]:
@@ -157,3 +163,21 @@ class NestedTensors:
         # TODO: sets, generators, collections.<...>
 
         return size, element_size
+
+    def _exec_inplace(
+        self, function: Callable[[Any], torch.Tensor], *args: Any, **kwargs: Any
+    ) -> NestedTensors:
+        for i, tensor in enumerate(self):
+            self[i] = function(tensor, *args, **kwargs)
+
+        self._update_info()
+        return self
+
+    def _exec(
+        self, function: Callable[[Any], torch.Tensor], *args: Any, **kwargs: Any
+    ) -> NestedTensors:
+        data_copy = copy.deepcopy(self.data)
+        result = copy.deepcopy(self._exec_inplace(function, *args, **kwargs))
+        self.data = copy.deepcopy(data_copy)
+        self._size, self._element_size = self._update_info()
+        return result

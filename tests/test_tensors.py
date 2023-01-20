@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import copy
+
 import pytest
 import torch
 
@@ -100,3 +102,30 @@ def test_just_tensor() -> None:
 def test_empty() -> None:
     tensors = NestedTensors(None)
     assert len(tensors) == 0
+
+
+def test_abs() -> None:
+    input_data = [torch.randn(10) for _ in range(10)]
+
+    tensors = NestedTensors(copy.deepcopy(input_data))
+    tensors_control = NestedTensors(copy.deepcopy(input_data))
+    tensors_abs = tensors.abs()
+
+    # Check that abs() doesn't change original data:
+    for tensor, tensor_control in zip(tensors, tensors_control):
+        assert torch.all(tensor == tensor_control)
+
+    # Check that torch.abs() was applied:
+    for tensor, tensor_abs in zip(tensors, tensors_abs):
+        assert torch.all(torch.abs(tensor) == tensor_abs)
+
+
+def test_abs_() -> None:
+    input_data = [torch.randn(5), torch.randn(5), torch.randn(5)]
+    tensors = NestedTensors(input_data)
+    tensors_control = NestedTensors(input_data)
+
+    tensors.abs_()
+
+    for tensor, tensor_control in zip(tensors, tensors_control):
+        assert torch.all(tensor == torch.abs(tensor_control))
