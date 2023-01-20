@@ -139,3 +139,67 @@ class TestAbs:
 
         for tensor, tensor_control in zip(tensors, tensors_control):
             assert torch.all(tensor == torch.abs(tensor_control))
+
+
+class TestAdd:
+    """Tests for the `add`- and `add_`-methods of `NestedTensors`."""
+
+    dtypes = [torch.float32, torch.int8, torch.complex64]
+    number_to_add_dict = {
+        torch.float32: 1.0,
+        torch.int8: 1,
+        torch.complex64: complex(1.0, 0.0),
+    }
+
+    def test_add(self) -> None:
+        for dtype in self.dtypes:
+            tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+            tensors_control = NestedTensors([torch.ones(2), torch.ones(2)])
+            tensors_add_tensor = tensors.add(torch.ones(2, dtype=dtype), alpha=2)
+
+            number_to_add = self.number_to_add_dict.get(dtype)
+            tensors_add_number = tensors.add(number_to_add)
+
+            # Check that tensors hasn't changed
+            for tensor, tensor_control in zip(tensors, tensors_control):
+                assert torch.all(tensor == tensor_control)
+
+            # Check that addition was successful for tensors
+            for tensor, tensor_add in zip(tensors, tensors_add_tensor):
+                assert torch.all(
+                    tensor.add(torch.ones(2, dtype=dtype), alpha=2) == tensor_add
+                )
+
+            # Check that addition was successful for numbers
+            for tensor, tensor_add in zip(tensors, tensors_add_number):
+                number_to_add = self.number_to_add_dict.get(dtype)
+                assert torch.all(
+                    tensor.add(number_to_add) == tensor_add  # type: ignore[arg-type]
+                )
+
+    def test_add_(self) -> None:
+        for dtype in self.dtypes:
+            tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+            tensors_control = NestedTensors([torch.ones(2), torch.ones(2)])
+
+            tensors_add_tensor = tensors.add_(torch.ones(2, dtype=dtype), alpha=2)
+
+            number_to_add = self.number_to_add_dict.get(dtype)
+            tensors_add_number = tensors.add_(number_to_add)
+
+            # Check that tensors has changed
+            for tensor, tensor_control in zip(tensors, tensors_control):
+                assert torch.all(tensor != tensor_control)
+
+            # Check that addition was successful for tensors
+            for tensor, tensor_add in zip(tensors, tensors_add_tensor):
+                assert torch.all(tensor == tensor_add)
+
+            # Check that addition was successful for numbers
+            for tensor, tensor_add in zip(tensors, tensors_add_number):
+                assert torch.all(tensor == tensor_add)
+
+    def test_add_wrong_shape(self) -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        with pytest.raises(RuntimeError):
+            tensors.add(torch.ones(3))

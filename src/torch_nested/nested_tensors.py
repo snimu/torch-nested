@@ -6,7 +6,7 @@ from typing import Any, Callable, Generator
 import torch
 
 from .nested_size import NestedSize
-from .type_definitions import SIZE_TYPES
+from .type_definitions import NUMBER_TYPES, SIZE_TYPES
 from .type_signals import (
     AccessDataAttr,
     AccessTensorsAttr,
@@ -114,6 +114,20 @@ class NestedTensors:
     def abs_(self) -> NestedTensors:
         return self._exec_inplace(torch.abs)
 
+    def add(
+        self, other: torch.Tensor | NUMBER_TYPES, *, alpha: NUMBER_TYPES = 1
+    ) -> NestedTensors:
+        # Ignore arg-type because torch.add has weird overloaded function-types
+        return self._exec(torch.add, other, alpha=alpha)  # type: ignore[arg-type]
+
+    def add_(
+        self, other: torch.Tensor | NUMBER_TYPES, *, alpha: NUMBER_TYPES = 1
+    ) -> NestedTensors:
+        # Ignore arg-type because torch.add has weird overloaded function-types
+        return self._exec_inplace(
+            torch.add, other, alpha=alpha  # type: ignore[arg-type]
+        )
+
     def _update_info(
         self, dim: int | None = None
     ) -> tuple[NestedSize | torch.Size | None, int]:
@@ -184,7 +198,13 @@ class NestedTensors:
         self, function: Callable[[Any], torch.Tensor], *args: Any, **kwargs: Any
     ) -> NestedTensors:
         for i, tensor in enumerate(self):
-            self[i] = function(tensor, *args, **kwargs)
+            try:
+                self[i] = function(tensor, *args, **kwargs)
+            except Exception as e:
+                raise RuntimeError(
+                    f"Couldn't apply operation {function.__name__} "
+                    f"to Tensor of shape {self[i].shape}."
+                ) from e
 
         self._update_info()
         return self
@@ -193,7 +213,11 @@ class NestedTensors:
         self, function: Callable[[Any], torch.Tensor], *args: Any, **kwargs: Any
     ) -> NestedTensors:
         data_copy = copy.deepcopy(self.data)
-        result = copy.deepcopy(self._exec_inplace(function, *args, **kwargs))
+
+        result = NestedTensors(copy.deepcopy(self.data))
+        for i, tensor in enumerate(result):
+            result[i] = function(tensor, *args, **kwargs)
+
         self.data = copy.deepcopy(data_copy)
         self._size, self._element_size = self._update_info()
         return result

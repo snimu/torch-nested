@@ -16,3 +16,5 @@ SIZE_TYPES = Optional[
         int,
     ]
 ]
+
+NUMBER_TYPES = Optional[Union[int, float, complex]]
