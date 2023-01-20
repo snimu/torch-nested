@@ -160,8 +160,6 @@ class NestedTensors:
             else:
                 size = list_size if list_size else None
 
-        # TODO: sets, generators, collections.<...>
-
         return size, element_size
 
     def _exec_inplace(
