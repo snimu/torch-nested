@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from torch_nested.signals import ObjectWithTensorsAttr
+from torch_nested.type_signals import ObjectWithTensorsAttr
 
 
 def test_len() -> None:

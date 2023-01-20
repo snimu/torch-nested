@@ -4,8 +4,8 @@ from typing import Any
 
 import torch
 
-from .signals import ObjectWithTensorsAttr
 from .type_definitions import SIZE_TYPES
+from .type_signals import ObjectWithTensorsAttr
 
 
 class NestedSize:

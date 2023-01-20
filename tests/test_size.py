@@ -6,7 +6,7 @@ import pytest
 import torch
 
 from torch_nested import NestedSize, NestedTensors
-from torch_nested.signals import ObjectWithTensorsAttr
+from torch_nested.type_signals import ObjectWithTensorsAttr
 
 from .fixtures.input_data import INPUT_DATA
 

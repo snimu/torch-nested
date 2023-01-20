@@ -6,8 +6,8 @@ from typing import Any, Generator
 import torch
 
 from .nested_size import NestedSize
-from .signals import AccessTensorsAttr, ObjectWithTensorsAttr
 from .type_definitions import SIZE_TYPES
+from .type_signals import AccessTensorsAttr, ObjectWithTensorsAttr
 
 
 class NestedTensors:

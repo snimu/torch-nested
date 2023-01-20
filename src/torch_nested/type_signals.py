@@ -1,3 +1,9 @@
+"""
+Signals to NestedTensors and NestedSize
+about the type of some entries to the data they hold.
+"""
+
+
 from __future__ import annotations
 
 from dataclasses import dataclass
