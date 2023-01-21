@@ -199,7 +199,32 @@ class TestAdd:
             for tensor, tensor_add in zip(tensors, tensors_add_number):
                 assert torch.all(tensor == tensor_add)
 
-    def test_add_wrong_shape(self) -> None:
+    @staticmethod
+    def test_add_wrong_shape() -> None:
         tensors = NestedTensors([torch.ones(2), torch.ones(2)])
         with pytest.raises(RuntimeError):
             tensors.add(torch.ones(3))
+
+    @staticmethod
+    def test_immutable_raises_exception() -> None:
+        input_data = (torch.ones(2), torch.ones(2))
+        tensors = NestedTensors(input_data)
+
+        with pytest.raises(RuntimeError):
+            _ = tensors.add_(input_data)  # type: ignore[arg-type]
+
+    @staticmethod
+    def test_inplace_returns_self() -> None:
+        # Establish baseline about assumptions
+        x = torch.ones(2)
+        y = x.add_(1)
+        y.add_(1)
+        assert torch.all(x == y)
+
+        # Repeat this for NestedTensors
+        tensors1 = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors2 = tensors1.add_(1)
+        tensors2.add_(1)
+
+        for tensor1, tensor2 in zip(tensors1, tensors2):
+            assert torch.all(tensor1 == tensor2)
