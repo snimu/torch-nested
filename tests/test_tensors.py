@@ -74,7 +74,7 @@ def test_size() -> None:
     assert size[2]["bar"] is None  # type: ignore[index]
     assert size[2]["har"] is None  # type: ignore[index]
     assert size[3] is None  # type: ignore[index]
-    assert size[4].tensors == torch.Size([3, 3])  # type: ignore[union-attr, index]
+    assert size[4].tensors[0] == torch.Size([3, 3])  # type: ignore[union-attr, index]
     assert size[5].data == torch.Size([3, 3])  # type: ignore[union-attr, index]
 
 

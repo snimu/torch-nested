@@ -22,6 +22,14 @@ class TestObjectWithTensorsAttr:
         obj = ObjectWithTensorsAttr("obj", 1)
         assert obj.tensors == 1
 
+    @staticmethod
+    def test_bool() -> None:
+        obj = ObjectWithTensorsAttr("obj", 1)
+        assert obj
+
+        obj = ObjectWithTensorsAttr("obj", 0)
+        assert not obj
+
 
 class TestObjectWithDataAttr:
     """Tests for ObjectWithDataAttr."""
@@ -41,3 +49,11 @@ class TestObjectWithDataAttr:
     def test_tensors() -> None:
         obj = ObjectWithDataAttr("obj", 1)
         assert obj.data == 1
+
+    @staticmethod
+    def test_bool() -> None:
+        obj = ObjectWithDataAttr("obj", 1)
+        assert obj
+
+        obj = ObjectWithDataAttr("obj", 0)
+        assert not obj

@@ -1,1 +1,1 @@
-torch_nested.NestedSize([(3, 2), 2, {foo: 2, bar: None, har: None}, None, ObjectWithTensors(tensors: 3), ObjectWithData(data: 3)])
+torch_nested.NestedSize([(3, 2), 2, {foo: 2, bar: None, har: None}, None, ObjectWithTensors(tensors: [3]), ObjectWithData(data: 3)])

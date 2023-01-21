@@ -12,7 +12,9 @@ torch_nested.NestedSize(
     },
     None,
     ObjectWithTensors(
-      tensors: 3
+      tensors: [
+          3
+        ]
     ),
     ObjectWithData(
       data: 3

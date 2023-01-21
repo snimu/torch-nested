@@ -35,6 +35,13 @@ def create_text(data: Any | None, spacing: str, newline: bool, target_type: str)
     elif isinstance(data, (torch.Tensor, torch.Size, int)):
         text = repr(data) if newline else str(data)
 
+        # Add spacing to beginning of all lines but the first
+        text_list = text.split("\n")
+        for i in range(1, len(text_list)):
+            text_list[i] = spacing + text_list[i]
+
+        text = "\n".join(text_list)
+
     elif isinstance(data, dict):
         opening = "{" + f"{sep0}"
         closing = spacing + "}" if sep0 == "\n" else "}"
@@ -64,8 +71,12 @@ def create_text(data: Any | None, spacing: str, newline: bool, target_type: str)
         alttext = "[]" if isinstance(data, list) else "()"
         text = opening + content + closing if data else alttext
 
-    elif isinstance(data, ObjectWithTensorsAttr):
-        opening = f"{data.name}({sep0}"
+    elif hasattr(data, "tensors"):
+        opening = (
+            f"{data.name}({sep0}"
+            if isinstance(data, ObjectWithTensorsAttr)
+            else f"{type(data).__name__}({sep0}"
+        )
         opening += spacing + " " * 2 + "tensors: " if sep0 == "\n" else "tensors: "
         closing = spacing + ")" if sep0 == "\n" else ")"
         spacing += " " * 4
@@ -77,8 +88,12 @@ def create_text(data: Any | None, spacing: str, newline: bool, target_type: str)
             + closing
         )
 
-    elif isinstance(data, ObjectWithDataAttr):
-        opening = f"{data.name}({sep0}"
+    elif hasattr(data, "data"):
+        opening = (
+            f"{data.name}({sep0}"
+            if isinstance(data, ObjectWithDataAttr)
+            else f"{type(data).__name__}({sep0}"
+        )
         opening += spacing + " " * 2 + "data: " if sep0 == "\n" else "data: "
         closing = spacing + ")" if sep0 == "\n" else ")"
         spacing += " " * 4
