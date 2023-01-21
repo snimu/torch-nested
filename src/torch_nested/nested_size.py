@@ -104,7 +104,6 @@ class NestedSize:
             opening += spacing + " " * 2 + "tensors: " if sep0 == "\n" else "tensors: "
             closing = spacing + ")" if sep0 == "\n" else ")"
             spacing += " " * 4
-            content = ""
 
             text = (
                 opening
@@ -118,7 +117,6 @@ class NestedSize:
             opening += spacing + " " * 2 + "data: " if sep0 == "\n" else "data: "
             closing = spacing + ")" if sep0 == "\n" else ")"
             spacing += " " * 4
-            content = ""
 
             text = (
                 opening
