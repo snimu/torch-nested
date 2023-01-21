@@ -42,6 +42,9 @@ class ObjectWithTensorsAttr:
             return 0
         return len(self._size)
 
+    def __bool__(self) -> bool:
+        return bool(self._size)
+
 
 @dataclass
 class ObjectWithDataAttr:
@@ -58,3 +61,6 @@ class ObjectWithDataAttr:
         if self._size is None:
             return 0
         return len(self._size)
+
+    def __bool__(self) -> bool:
+        return bool(self._size)
