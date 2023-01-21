@@ -93,9 +93,9 @@ class TestStrRepr:
     @staticmethod
     def test_size_int() -> None:
         size = NestedSize([1])
-        assert str(size) == "torch_nested.Size([1])"
+        assert str(size) == "torch_nested.NestedSize([1])"
 
     @staticmethod
     def test_size_undefined_dtype() -> None:
         size = NestedSize([1.0])
-        assert str(size) == "torch_nested.Size([None])"
+        assert str(size) == "torch_nested.NestedSize([None])"

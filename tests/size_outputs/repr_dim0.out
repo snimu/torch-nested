@@ -1,4 +1,4 @@
-torch_nested.Size(
+torch_nested.NestedSize(
   [
     (
       3,
