@@ -6,6 +6,7 @@ from typing import Any, Callable, Generator
 import torch
 
 from .nested_size import NestedSize
+from .str_repr import create_str_repr
 from .type_definitions import NUMBER_TYPES, SIZE_TYPES
 from .type_signals import (
     AccessDataAttr,
@@ -95,6 +96,16 @@ class NestedTensors:
 
     def __len__(self) -> int:
         return len(self._access_keys)
+
+    def __str__(self) -> str:
+        return create_str_repr(
+            data=self.data, newline=False, target_type=f"{type(self).__name__}"
+        )
+
+    def __repr__(self) -> str:
+        return create_str_repr(
+            data=self.data, newline=True, target_type=f"{type(self).__name__}"
+        )
 
     def size(self, dim: int | None = None) -> NestedSize | torch.Size | None:
         if dim is not None:

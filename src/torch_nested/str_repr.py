@@ -10,17 +10,21 @@ from .type_signals import ObjectWithDataAttr, ObjectWithTensorsAttr
 def create_str_repr(data: Any, newline: bool, target_type: str) -> str:
     if newline:
         opening = f"torch_nested.{target_type}(\n  "
-        content = create_text(data, spacing=" " * 2, newline=newline)
+        content = create_text(
+            data, spacing=" " * 2, newline=newline, target_type=target_type
+        )
         closing = "\n)\n"
     else:
         opening = f"torch_nested.{target_type}("
-        content = create_text(data, spacing="", newline=newline)
+        content = create_text(
+            data, spacing="", newline=newline, target_type=target_type
+        )
         closing = ")"
 
     return opening + content + closing
 
 
-def create_text(data: Any | None, spacing: str, newline: bool) -> str:
+def create_text(data: Any | None, spacing: str, newline: bool, target_type: str) -> str:
     # The seperator after an opening (e.g. "[" or "{")
     sep0 = "\n" if newline else ""
     # The seperator after a closing (e.g. "]" or "}")
@@ -29,7 +33,7 @@ def create_text(data: Any | None, spacing: str, newline: bool) -> str:
     if data is None:
         text = "None"
     elif isinstance(data, (torch.Tensor, torch.Size, int)):
-        text = str(data)
+        text = repr(data) if newline else str(data)
 
     elif isinstance(data, dict):
         opening = "{" + f"{sep0}"
@@ -40,10 +44,10 @@ def create_text(data: Any | None, spacing: str, newline: bool) -> str:
         for i, (key, value) in enumerate(data.items()):
             content += spacing if sep0 == "\n" else ""
             content += str(key) + ": "
-            content += create_text(value, spacing, newline)
+            content += create_text(value, spacing, newline, target_type)
             content += f"{sep0}" if i == len(data) - 1 else f",{sep1}"
 
-        text = opening + content + closing
+        text = opening + content + closing if data else "{}"
 
     elif isinstance(data, (list, tuple)):
         opening = f"({sep0}" if isinstance(data, tuple) else f"[{sep0}"
@@ -54,10 +58,11 @@ def create_text(data: Any | None, spacing: str, newline: bool) -> str:
 
         for i, item in enumerate(data):
             content += spacing if sep0 == "\n" else ""
-            content += create_text(item, spacing, newline)
+            content += create_text(item, spacing, newline, target_type)
             content += f"{sep0}" if i == len(data) - 1 else f",{sep1}"
 
-        text = opening + content + closing
+        alttext = "[]" if isinstance(data, list) else "()"
+        text = opening + content + closing if data else alttext
 
     elif isinstance(data, ObjectWithTensorsAttr):
         opening = f"{data.name}({sep0}"
@@ -66,7 +71,10 @@ def create_text(data: Any | None, spacing: str, newline: bool) -> str:
         spacing += " " * 4
 
         text = (
-            opening + create_text(data.tensors, spacing, newline) + f"{sep0}" + closing
+            opening
+            + create_text(data.tensors, spacing, newline, target_type)
+            + f"{sep0}"
+            + closing
         )
 
     elif isinstance(data, ObjectWithDataAttr):
@@ -75,9 +83,23 @@ def create_text(data: Any | None, spacing: str, newline: bool) -> str:
         closing = spacing + ")" if sep0 == "\n" else ")"
         spacing += " " * 4
 
-        text = opening + create_text(data.data, spacing, newline) + f"{sep0}" + closing
+        text = (
+            opening
+            + create_text(data.data, spacing, newline, target_type)
+            + f"{sep0}"
+            + closing
+        )
 
     else:
-        text = "None"
+        if target_type == "NestedTensors":
+            try:
+                text = repr(data) if newline else str(data)
+            except Exception as e:
+                raise TypeError(
+                    f"Couldn't produce str-output "
+                    f"for data containing type {type(data)}."
+                ) from e
+        else:
+            text = "None"
 
     return text

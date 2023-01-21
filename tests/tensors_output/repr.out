@@ -1,0 +1,25 @@
+torch_nested.NestedTensors(
+  [
+    (
+      tensor([1., 1., 1.]),
+      tensor([0., 0.])
+    ),
+    tensor([[[1., 1.],
+         [1., 1.]],
+
+        [[1., 1.],
+         [1., 1.]]]),
+    {
+      foo: tensor([1., 1.]),
+      bar: [],
+      har: 'rar'
+    },
+    1,
+    ObjectWithTensors(tensors=tensor([[1., 1., 1.],
+        [1., 1., 1.],
+        [1., 1., 1.]])),
+    ObjectWithData(data=tensor([[1., 1., 1.],
+        [1., 1., 1.],
+        [1., 1., 1.]]))
+  ]
+)
