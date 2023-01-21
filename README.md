@@ -1,5 +1,12 @@
 # torch-nested
 
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
+[![PyPI](https://img.shields.io/pypi/v/torch-nested)](https://pypi.org/project/torch-nested/)
+[![Tests](https://github.com/snimu/torch-nested/actions/workflows/test.yml/badge.svg)](https://github.com/snimu/torch-nested/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/snimu/torch-nested/branch/main/graph/badge.svg)](https://codecov.io/gh/snimu/torch-nested)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/snimu/torch-nested/main.svg)](https://results.pre-commit.ci/latest/github/snimu/torch-nested/main)
+[![License](https://img.shields.io/pypi/l/torch-nested)](https://github.com/snimu/torch-nested/blob/main/LICENSE)
+
 Easily manipulate `torch.Tensors` inside highly nested data-structures.
 
 You may want to consider using [torch.nested](https://pytorch.org/docs/stable/nested.html),
