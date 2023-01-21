@@ -4,6 +4,7 @@ import copy
 
 import pytest
 import torch
+from packaging import version
 
 from torch_nested import NestedTensors
 
@@ -141,6 +142,10 @@ class TestAbs:
             assert torch.all(tensor == torch.abs(tensor_control))
 
 
+@pytest.mark.skipif(
+    version.parse(torch.__version__) < version.parse("1.6"),
+    reason="`add` and `add_` behave differently in versions < 1.6",
+)
 class TestAdd:
     """Tests for the `add`- and `add_`-methods of `NestedTensors`."""
 
