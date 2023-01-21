@@ -55,6 +55,9 @@ class NestedTensors:
     def _setitem_recursive(
         self, data: Any, steps: list[Any], value: Any, key: int
     ) -> Any | None:
+        if not steps or not data:
+            return value
+
         if hasattr(data, "tensors"):
             data.tensors = self._setitem_recursive(data.tensors, steps[1:], value, key)
             return data
@@ -62,12 +65,6 @@ class NestedTensors:
         if not isinstance(data, torch.Tensor) and hasattr(data, "data"):
             data.data = self._setitem_recursive(data.data, steps[1:], value, key)
             return data
-
-        if not steps or not data:
-            return value
-
-        if len(steps) == 1:
-            data[steps[0]] = value
 
         try:
             data[steps[0]] = self._setitem_recursive(
