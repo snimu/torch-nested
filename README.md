@@ -84,23 +84,39 @@ The following data-structures are supported so far:
 - `list`
 - `tuple`
 - `None`
-- Any class with a `.tensors`-attribute. For example:
+- Any class with a `.tensors`-attribute
+- Any class with a `.data`-attribute, even if it isn't a `torch.Tensor`
+
+For example
 
 ```python
 class ObjWithTensors:
     tensors = [torch.ones(2), torch.zeros(2)]
+
+class ObjWithData:
+    data = [torch.ones(2), torch.zeros(2)]
+
+tensors = NestedTensors([ObjWithTensors(), ObjWithData()])
 ```
 
-Running `print(NestedTensors(ObjWithTensors).size())` would result in the following output:
+Running `print(tensors.size())` would result in the following output:
 
 ```
 NestedSize(
-  ObjWithTensors(
-    tensors: [
-      torch.Size([2]),
-      torch.Size([2])
-    ]
-  )
+  [
+    ObjWithTensors(
+      tensors: [
+        torch.Size([2]),
+        torch.Size([2])
+      ]
+    ),
+    ObjWithData(
+      data: [
+        torch.Size([2]),
+        torch.Size([2])
+      ]
+    )
+  ]
 )
 ```
 
