@@ -124,6 +124,12 @@ class NestedTensors:
 
         return element_size
 
+    def sizes(self) -> list[torch.Size]:
+        return [tensor.size() for tensor in self]
+
+    def element_sizes(self) -> list[int]:
+        return [tensor.element_size() for tensor in self]
+
     def abs(self) -> NestedTensors:
         return self._exec(torch.abs)
 
