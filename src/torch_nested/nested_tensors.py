@@ -23,7 +23,7 @@ class NestedTensors:
         self.data = data
 
         self._access_keys: list[list[Any]] = []
-        self._size, self._element_size = self._update_info()
+        self._size = self._update_info()
         self._next_index: int = 0
 
     def __getitem__(self, key: Any) -> torch.Tensor:
@@ -51,7 +51,7 @@ class NestedTensors:
         self.data = self._setitem_recursive(
             self.data, self._access_keys[key], value, key
         )
-        self._size, self._element_size = self._update_info()
+        self._size = self._update_info()
 
     def _setitem_recursive(
         self, data: Any, steps: list[Any], value: Any, key: int
@@ -109,12 +109,20 @@ class NestedTensors:
 
     def size(self, dim: int | None = None) -> NestedSize | torch.Size | None:
         if dim is not None:
-            size, _ = self._update_info(dim=dim)  # don't update self._size!
+            size = self._update_info(dim=dim)  # don't update self._size!
             return size
         return self._size
 
     def element_size(self) -> int:
-        return self._element_size
+        element_size = self[0].element_size() if len(self) > 0 else 0
+
+        for tensor in self:
+            if tensor.element_size() != element_size:
+                raise ValueError(
+                    "Inconsistent element sizes. Please use `element_sizes` instead."
+                )
+
+        return element_size
 
     def abs(self) -> NestedTensors:
         return self._exec(torch.abs)
@@ -136,24 +144,21 @@ class NestedTensors:
             torch.add, other, alpha=alpha  # type: ignore[arg-type]
         )
 
-    def _update_info(
-        self, dim: int | None = None
-    ) -> tuple[NestedSize | torch.Size | None, int]:
-        size, element_size = self._extract_info(self.data, [], dim=dim)
+    def _update_info(self, dim: int | None = None) -> NestedSize | torch.Size | None:
+        size = self._extract_info(self.data, [], dim=dim)
 
         if not isinstance(size, torch.Size):
-            return NestedSize(size), element_size
-        return size, element_size
+            return NestedSize(size)
+        return size
 
     def _extract_info(
         self, data: Any, path: list[Any], dim: int | None = None
-    ) -> tuple[SIZE_TYPES, int]:
+    ) -> SIZE_TYPES:
         size: SIZE_TYPES = None
-        element_size: int = 0
 
         if isinstance(data, torch.Tensor):
             self._access_keys.append(copy.deepcopy(path))
-            size, element_size = data.size(), data.element_size()
+            size = data.size()
 
             if dim is not None:
                 size = size[dim] if 0 <= dim < len(size) else None
@@ -161,16 +166,14 @@ class NestedTensors:
         elif hasattr(data, "tensors"):
             crnt_path = copy.deepcopy(path)
             crnt_path.append(AccessTensorsAttr())
-            tensors_size, element_size = self._extract_info(
-                data.tensors, crnt_path, dim
-            )
+            tensors_size = self._extract_info(data.tensors, crnt_path, dim)
 
             size = ObjectWithTensorsAttr(type(data).__qualname__, tensors_size)
 
         elif hasattr(data, "data"):
             crnt_path = copy.deepcopy(path)
             crnt_path.append(AccessDataAttr())
-            data_size, element_size = self._extract_info(data.data, crnt_path, dim)
+            data_size = self._extract_info(data.data, crnt_path, dim)
 
             size = ObjectWithDataAttr(type(data).__qualname__, data_size)
 
@@ -180,8 +183,7 @@ class NestedTensors:
             for key, val in data.items():
                 crnt_path = copy.deepcopy(path)
                 crnt_path.append(key)
-                dict_size[key], element_size_ = self._extract_info(val, crnt_path, dim)
-                element_size += element_size_
+                dict_size[key] = self._extract_info(val, crnt_path, dim)
 
             size = dict_size if dict_size else None
 
@@ -191,16 +193,15 @@ class NestedTensors:
             for i, item in enumerate(data):
                 crnt_path = copy.deepcopy(path)
                 crnt_path.append(i)
-                size_, element_size_ = self._extract_info(item, crnt_path, dim)
+                size_ = self._extract_info(item, crnt_path, dim)
                 list_size.append(size_)
-                element_size += element_size_
 
             if isinstance(data, tuple):
                 size = tuple(list_size) if list_size else None
             else:
                 size = list_size if list_size else None
 
-        return size, element_size
+        return size
 
     def _exec_inplace(
         self, function: Callable[[Any], torch.Tensor], *args: Any, **kwargs: Any
@@ -214,7 +215,7 @@ class NestedTensors:
                     f"to Tensor of shape {self[i].shape}."
                 ) from e
 
-        self._update_info()
+        self._size = self._update_info()
         return self
 
     def _exec(
@@ -227,5 +228,5 @@ class NestedTensors:
             result[i] = function(tensor, *args, **kwargs)
 
         self.data = copy.deepcopy(data_copy)
-        self._size, self._element_size = self._update_info()
+        self._size = self._update_info()
         return result

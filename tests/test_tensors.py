@@ -45,17 +45,17 @@ def test_len() -> None:
 
 
 def test_element_size() -> None:
-    element_size = (
-        torch.ones(3).element_size()
-        + torch.zeros(2).element_size()
-        + torch.ones((2, 2, 2)).element_size()
-        + torch.ones(2).element_size()
-        + torch.ones((3, 3)).element_size()
-        + torch.ones((3, 3)).element_size()
-    )
+    element_size = torch.ones(3).element_size()
 
     tensors = NestedTensors(INPUT_DATA)
     assert tensors.element_size() == element_size
+
+    tensors = NestedTensors(
+        [torch.randn(3, dtype=torch.float32), torch.randn(3, dtype=torch.float64)]
+    )
+
+    with pytest.raises(ValueError):
+        _ = tensors.element_size()
 
 
 def test_size() -> None:
