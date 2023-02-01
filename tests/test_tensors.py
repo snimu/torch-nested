@@ -200,6 +200,27 @@ class TestMulRmul:
             assert torch.all(tensorl == tensorr)
 
 
+class TestTruedivRtruediv:
+    """Tests for the `__truediv__"-method."""
+
+    @staticmethod
+    def test__truediv__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors__div__ = tensors / 2
+
+        for tensor, tensor_div in zip(tensors, tensors__div__):
+            assert torch.all(tensor_div == tensor / 2)
+
+    @staticmethod
+    def test__rtruediv__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors__div__ = tensors / 0.5
+        tensors__rdiv__ = 2 / tensors
+
+        for t1, t2 in zip(tensors__div__, tensors__rdiv__):
+            assert torch.all(torch.abs(t1 - t2) < 1e-6)
+
+
 @pytest.mark.skipif(
     version.parse(torch.__version__) < version.parse("1.6"),
     reason="`add` and `add_` behave differently in versions < 1.6",

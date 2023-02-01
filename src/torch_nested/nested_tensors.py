@@ -119,6 +119,12 @@ class NestedTensors:
     def __rmul__(self, other: Any) -> NestedTensors:
         return self.__mul__(other)
 
+    def __truediv__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: t / o)
+
+    def __rtruediv__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: o / t)
+
     def _math_op(self, other: Any, op: Callable[[Any, Any], Any]) -> NestedTensors:
         data = copy.deepcopy(self.data)
 
