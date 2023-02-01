@@ -108,13 +108,13 @@ class NestedTensors:
         )
 
     def __add__(self, other: Any) -> NestedTensors:
-        return self._math_op(other, op=lambda left, right: left + right)
+        return self._math_op(other, op=lambda t, o: t + o)
 
     def __radd__(self, other: Any) -> NestedTensors:
         return self.__add__(other)
 
     def __mul__(self, other: Any) -> NestedTensors:
-        return self._math_op(other, op=lambda left, right: left * right)
+        return self._math_op(other, op=lambda t, o: t * o)
 
     def __rmul__(self, other: Any) -> NestedTensors:
         return self.__mul__(other)
