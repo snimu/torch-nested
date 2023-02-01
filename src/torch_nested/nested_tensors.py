@@ -111,17 +111,26 @@ class NestedTensors:
         data = copy.deepcopy(self.data)
 
         for i, tensor in enumerate(self):
-            try:
-                data[i] = tensor + other
-            except Exception as e:
-                raise RuntimeError(
-                    f"Couldn't add other to self[{i}], where {other=} and {self[i]=}."
-                ) from e
+            data[i] = self._math_op(
+                i, tensor, other, op=lambda left, right: left + right
+            )
 
         return NestedTensors(data)
 
     def __radd__(self, other: Any) -> NestedTensors:
         return self.__add__(other)
+
+    @staticmethod
+    def _math_op(
+        i: int, left: torch.Tensor, right: Any, op: Callable[[Any, Any], Any]
+    ) -> Any:
+        try:
+            return op(left, right)
+        except Exception as e:
+            raise RuntimeError(
+                f"Couldn't add other to self[{i}], "
+                f"where other={right} and self[i]={right}."
+            ) from e
 
     def size(self, dim: int | None = None) -> NestedSize | torch.Size | None:
         if dim is not None:
