@@ -171,6 +171,35 @@ class TestAddRadd:
             assert torch.all(tensorl == tensorr)
 
 
+class TestMulRmul:
+    """Tests for the `__mul__`- and `__rmul__`- methods"""
+
+    @staticmethod
+    def test__mul__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors__mul__ = tensors * 2
+
+        for tensor, tensor_mul in zip(tensors, tensors__mul__):
+            assert torch.all(tensor * 2 == tensor_mul)
+
+        randn = torch.randn(2)
+        tensors__mul__ = tensors * randn
+        for tensor, tensor_mul in zip(tensors, tensors__mul__):
+            assert torch.all(tensor * randn == tensor_mul)
+
+        with pytest.raises(RuntimeError):
+            _ = tensors * torch.ones(3)
+
+    @staticmethod
+    def test__rmul__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors__mul__ = tensors * 2
+        tensors__rmul__ = 2 * tensors
+
+        for tensorl, tensorr in zip(tensors__mul__, tensors__rmul__):
+            assert torch.all(tensorl == tensorr)
+
+
 @pytest.mark.skipif(
     version.parse(torch.__version__) < version.parse("1.6"),
     reason="`add` and `add_` behave differently in versions < 1.6",

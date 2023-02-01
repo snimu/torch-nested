@@ -120,6 +120,19 @@ class NestedTensors:
     def __radd__(self, other: Any) -> NestedTensors:
         return self.__add__(other)
 
+    def __mul__(self, other: Any) -> NestedTensors:
+        data = copy.deepcopy(self.data)
+
+        for i, tensor in enumerate(self):
+            data[i] = self._math_op(
+                i, tensor, other, op=lambda left, right: left * right
+            )
+
+        return NestedTensors(data)
+
+    def __rmul__(self, other: Any) -> NestedTensors:
+        return self.__mul__(other)
+
     @staticmethod
     def _math_op(
         i: int, left: torch.Tensor, right: Any, op: Callable[[Any, Any], Any]
