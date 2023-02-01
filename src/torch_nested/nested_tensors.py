@@ -107,6 +107,22 @@ class NestedTensors:
             data=self.data, newline=True, target_type=f"{type(self).__name__}"
         )
 
+    def __add__(self, other: Any) -> NestedTensors:
+        data = copy.deepcopy(self.data)
+
+        for i, tensor in enumerate(self):
+            try:
+                data[i] = tensor + other
+            except Exception as e:
+                raise RuntimeError(
+                    f"Couldn't add other to self[{i}], where {other=} and {self[i]=}."
+                ) from e
+
+        return NestedTensors(data)
+
+    def __radd__(self, other: Any) -> NestedTensors:
+        return self.__add__(other)
+
     def size(self, dim: int | None = None) -> NestedSize | torch.Size | None:
         if dim is not None:
             size = self._update_info(dim=dim)  # don't update self._size!

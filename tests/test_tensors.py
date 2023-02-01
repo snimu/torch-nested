@@ -205,6 +205,31 @@ class TestAdd:
                 assert torch.all(tensor == tensor_add)
 
     @staticmethod
+    def test__add__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors_control = tensors + 1
+
+        for tensor, tensor_control in zip(tensors, tensors_control):
+            assert torch.all(tensor + 1 == tensor_control)
+
+        tensors_control = tensors + torch.ones(2)
+        for tensor, tensor_control in zip(tensors, tensors_control):
+            assert torch.all(tensor + torch.ones(2) == tensor_control)
+
+        tensors = NestedTensors([torch.ones(2), torch.ones(3)])
+        with pytest.raises(RuntimeError):
+            _ = tensors + torch.ones(2)
+
+    @staticmethod
+    def test__radd__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors__add__ = tensors + 1
+        tensors__radd__ = 1 + tensors
+
+        for tensorl, tensorr in zip(tensors__add__, tensors__radd__):
+            assert torch.all(tensorl == tensorr)
+
+    @staticmethod
     def test_add_wrong_shape() -> None:
         tensors = NestedTensors([torch.ones(2), torch.ones(2)])
         with pytest.raises(RuntimeError):
