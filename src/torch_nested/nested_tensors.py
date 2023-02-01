@@ -132,8 +132,10 @@ class NestedTensors:
             try:
                 data[i] = op(tensor, other)
             except Exception as e:
+                # Don't use {other=} because it doesn't work with old Python
                 raise RuntimeError(
-                    f"Couldn't add other to self[{i}], where {other=} and {self[i]=}."
+                    f"Couldn't add other to self[{i}], "
+                    f"where other={other} and self[i]={self[i]}."
                 ) from e
 
         return NestedTensors(data)
