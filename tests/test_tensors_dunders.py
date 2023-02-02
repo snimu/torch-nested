@@ -10,7 +10,7 @@ from torch_nested import NestedTensors
 from .fixtures.input_data import INPUT_DATA
 
 
-def test_getitem() -> None:
+def test__getitem__() -> None:
     tensors = NestedTensors(INPUT_DATA)
 
     assert torch.all(tensors[0] == torch.ones(3))
@@ -21,14 +21,14 @@ def test_getitem() -> None:
     assert torch.all(tensors[-1] == torch.ones(3, 3))
 
 
-def test_iter() -> None:
+def test__iter__() -> None:
     tensors = NestedTensors(INPUT_DATA)
 
     for tensor in tensors:
         assert isinstance(tensor, torch.Tensor)
 
 
-def test_next() -> None:
+def test__next__() -> None:
     tensors = NestedTensors(INPUT_DATA)
 
     for _ in range(6):
@@ -38,12 +38,12 @@ def test_next() -> None:
         next(tensors)
 
 
-def test_len() -> None:
+def test__len__() -> None:
     tensors = NestedTensors(INPUT_DATA)
     assert len(tensors) == 6
 
 
-def test_setitem() -> None:
+def test__setitem__() -> None:
     tensors = NestedTensors(INPUT_DATA)
 
     tensors[2] = torch.zeros((3, 3, 3))
