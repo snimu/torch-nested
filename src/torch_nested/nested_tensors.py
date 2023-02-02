@@ -107,27 +107,27 @@ class NestedTensors:
             data=self.data, newline=True, target_type=f"{type(self).__name__}"
         )
 
-    def __add__(self, other: Any) -> NestedTensors:
+    def __add__(self, other: Any, /) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t + o)
 
-    def __radd__(self, other: Any) -> NestedTensors:
+    def __radd__(self, other: Any, /) -> NestedTensors:
         return self.__add__(other)
 
-    def __iadd__(self, other: Any) -> NestedTensors:
+    def __iadd__(self, other: Any, /) -> NestedTensors:
         res = self + other
         self.data = res.data
         return self
 
-    def __mul__(self, other: Any) -> NestedTensors:
+    def __mul__(self, other: Any, /) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t * o)
 
-    def __rmul__(self, other: Any) -> NestedTensors:
+    def __rmul__(self, other: Any, /) -> NestedTensors:
         return self.__mul__(other)
 
-    def __truediv__(self, other: Any) -> NestedTensors:
+    def __truediv__(self, other: Any, /) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t / o)
 
-    def __rtruediv__(self, other: Any) -> NestedTensors:
+    def __rtruediv__(self, other: Any, /) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: o / t)
 
     def _math_op(self, other: Any, op: Callable[[Any, Any], Any]) -> NestedTensors:
