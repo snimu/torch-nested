@@ -179,7 +179,7 @@ class TestAddRaddIadd:
             assert torch.all(tensor == torch.ones(2) + 1)
 
 
-class TestMulRmul:
+class TestMulRmulImul:
     """Tests for the `__mul__`-, `__ramul__`-, and `__imul__`-methods."""
 
     @staticmethod
@@ -247,7 +247,7 @@ class TestMatmulRmatmulImatmul:
             assert torch.all(tensor == (torch.ones(2, 2) @ randn))
 
 
-class TestTruedivRtruediv:
+class TestTruedivRtruedivItruediv:
     """Tests for the `__truediv__`-, `__rtruediv__`-, and `__itruediv__`-methods."""
 
     @staticmethod
