@@ -142,7 +142,7 @@ class TestAbs:
             assert torch.all(tensor == torch.abs(tensor_control))
 
 
-class TestAddRadd:
+class TestAddRaddIadd:
     """Tests for the `__add__`- and `__radd__`- methods."""
 
     @staticmethod
@@ -169,6 +169,14 @@ class TestAddRadd:
 
         for tensorl, tensorr in zip(tensors__add__, tensors__radd__):
             assert torch.all(tensorl == tensorr)
+
+    @staticmethod
+    def test__iadd__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors += 1
+
+        for tensor in tensors:
+            assert torch.all(tensor == torch.ones(2) + 1)
 
 
 class TestMulRmul:
