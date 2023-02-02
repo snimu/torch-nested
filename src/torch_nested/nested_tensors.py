@@ -107,79 +107,79 @@ class NestedTensors:
             data=self.data, newline=True, target_type=f"{type(self).__name__}"
         )
 
-    def __add__(self, other: Any, /) -> NestedTensors:
+    def __add__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t + o)
 
-    def __radd__(self, other: Any, /) -> NestedTensors:
+    def __radd__(self, other: Any) -> NestedTensors:
         return self.__add__(other)
 
-    def __iadd__(self, other: Any, /) -> NestedTensors:
+    def __iadd__(self, other: Any) -> NestedTensors:
         res = self + other
         self.data = res.data
         return self
 
-    def __mul__(self, other: Any, /) -> NestedTensors:
+    def __mul__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t * o)
 
-    def __rmul__(self, other: Any, /) -> NestedTensors:
+    def __rmul__(self, other: Any) -> NestedTensors:
         return self.__mul__(other)
 
-    def __imul__(self, other: Any, /) -> NestedTensors:
+    def __imul__(self, other: Any) -> NestedTensors:
         res = self * other
         self.data = res.data
         return self
 
-    def __matmul__(self, other: Any, /) -> NestedTensors:
+    def __matmul__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t @ o)
 
-    def __rmatmul__(self, other: Any, /) -> NestedTensors:
+    def __rmatmul__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: o @ t)
 
-    def __imatmul__(self, other: Any, /) -> NestedTensors:
+    def __imatmul__(self, other: Any) -> NestedTensors:
         res = self @ other
         self.data = res.data
         return self
 
-    def __truediv__(self, other: Any, /) -> NestedTensors:
+    def __truediv__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t / o)
 
-    def __rtruediv__(self, other: Any, /) -> NestedTensors:
+    def __rtruediv__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: o / t)
 
-    def __itruediv__(self, other: Any, /) -> NestedTensors:
+    def __itruediv__(self, other: Any) -> NestedTensors:
         res = self / other
         self.data = res.data
         return self
 
-    def __floordiv__(self, other: Any, /) -> NestedTensors:
+    def __floordiv__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t // o)
 
-    def __rfloordiv__(self, other: Any, /) -> NestedTensors:
+    def __rfloordiv__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: o // t)
 
-    def __ifloordiv__(self, other: Any, /) -> NestedTensors:
+    def __ifloordiv__(self, other: Any) -> NestedTensors:
         res = self // other
         self.data = res.data
         return self
 
-    def __rshift__(self, other: Any, /) -> NestedTensors:
+    def __rshift__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t >> o)
 
-    def __rrshift__(self, other: Any, /) -> NestedTensors:
+    def __rrshift__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: o >> t)
 
-    def __irshift__(self, other: Any, /) -> NestedTensors:
+    def __irshift__(self, other: Any) -> NestedTensors:
         res = self >> other
         self.data = res.data
         return self
 
-    def __lshift__(self, other: Any, /) -> NestedTensors:
+    def __lshift__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t << o)
 
-    def __rlshift__(self, other: Any, /) -> NestedTensors:
+    def __rlshift__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: o << t)
 
-    def __ilshift__(self, other: Any, /) -> NestedTensors:
+    def __ilshift__(self, other: Any) -> NestedTensors:
         res = self << other
         self.data = res.data
         return self
