@@ -276,6 +276,46 @@ class TestTruedivRtruedivItruediv:
             assert torch.all(tensor == torch.ones(2) / 2)
 
 
+class TestShifts:
+    """Tests for the different shift-methods."""
+
+    INPUTS = [torch.ones(2).to(dtype=torch.int8), torch.ones(2).to(dtype=torch.int8)]
+    TENSORS = NestedTensors(INPUTS)
+
+    def test__lshift__rshift__(self) -> None:
+        tensors = copy.deepcopy(self.TENSORS)
+        tensors__lshift__ = tensors << 1
+        tensors__rshift__ = tensors >> 1
+
+        for i, tensor in enumerate(tensors):
+            assert torch.all(tensors__lshift__[i] == tensor << 1)
+            assert torch.all(tensors__rshift__[i] == tensor >> 1)
+
+    def test__rlshift__rrshift__(self) -> None:
+        tensors = copy.deepcopy(self.TENSORS)
+        threes = (torch.ones(2) * 3).to(dtype=torch.int8)
+        tensors__rlshift__ = threes << tensors
+        tensors__rrshift__ = threes >> tensors
+
+        for i, tensor in enumerate(tensors):
+            assert torch.all(tensors__rlshift__[i] == threes << tensor)
+            assert torch.all(tensors__rrshift__[i] == threes >> tensor)
+
+    def test__ilshift__(self) -> None:
+        tensors = copy.deepcopy(self.TENSORS)
+        tensors <<= 1
+
+        for i, tensor in enumerate(tensors):
+            assert torch.all(tensor == self.TENSORS[i] << 1)
+
+    def test__irshift__(self) -> None:
+        tensors = copy.deepcopy(self.TENSORS)
+        tensors >>= 1
+
+        for i, tensor in enumerate(tensors):
+            assert torch.all(tensor == self.TENSORS[i] >> 1)
+
+
 @pytest.mark.skipif(
     version.parse(torch.__version__) < version.parse("1.6"),
     reason="`add` and `add_` behave differently in versions < 1.6",
