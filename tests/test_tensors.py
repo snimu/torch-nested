@@ -143,7 +143,7 @@ class TestAbs:
 
 
 class TestAddRaddIadd:
-    """Tests for the `__add__`- and `__radd__`- methods."""
+    """Tests for the `__add__`-, `__radd__`-, and `__iadd__`-methods."""
 
     @staticmethod
     def test__add__() -> None:
@@ -180,7 +180,7 @@ class TestAddRaddIadd:
 
 
 class TestMulRmul:
-    """Tests for the `__mul__`- and `__rmul__`- methods"""
+    """Tests for the `__mul__`-, `__ramul__`-, and `__imul__`-methods."""
 
     @staticmethod
     def test__mul__() -> None:
@@ -217,7 +217,7 @@ class TestMulRmul:
 
 
 class TestMatmulRmatmulImatmul:
-    """Tests for the `__matmul__"-, "__rmatmul__"-, and "__imatmul__"-methods."""
+    """Tests for the `__matmul__`-, `__rmatmul__`-, and `__imatmul__`-methods."""
 
     @staticmethod
     def test__matmul__() -> None:
@@ -248,7 +248,7 @@ class TestMatmulRmatmulImatmul:
 
 
 class TestTruedivRtruediv:
-    """Tests for the `__truediv__"-method."""
+    """Tests for the `__truediv__`-, `__rtruediv__`-, and `__itruediv__`-methods."""
 
     @staticmethod
     def test__truediv__() -> None:
