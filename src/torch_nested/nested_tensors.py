@@ -124,6 +124,11 @@ class NestedTensors:
     def __rmul__(self, other: Any, /) -> NestedTensors:
         return self.__mul__(other)
 
+    def __imul__(self, other: Any, /) -> NestedTensors:
+        res = self * other
+        self.data = res.data
+        return self
+
     def __truediv__(self, other: Any, /) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t / o)
 

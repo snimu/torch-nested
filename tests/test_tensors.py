@@ -207,6 +207,14 @@ class TestMulRmul:
         for tensorl, tensorr in zip(tensors__mul__, tensors__rmul__):
             assert torch.all(tensorl == tensorr)
 
+    @staticmethod
+    def test__imul__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors *= 2
+
+        for tensor in tensors:
+            assert torch.all(tensor == torch.ones(2) * 2)
+
 
 class TestTruedivRtruediv:
     """Tests for the `__truediv__"-method."""
