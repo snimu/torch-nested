@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import copy
+import sys
 
 import pytest
 import torch
+from packaging import version
 
 from torch_nested import NestedTensors
 
@@ -207,6 +209,17 @@ class TestFloordivs:
         for tensor, tensor_fd in zip(tensors, tensors__fd__):
             assert torch.all(tensor_fd == tensor // 2)
 
+    @pytest.mark.skipif(
+        (
+            version.parse(torch.__version__) < version.parse("1.5.1")
+            or (
+                # sys.version gives the version-str and then a long text...
+                version.parse(sys.version.split(" ", maxsplit=1)[0])
+                < version.parse("3.8")
+            )
+        ),
+        reason="`__rfloordiv__` doesn't work for Python3.7 or PyTorch1.4",
+    )
     def test__rfloordiv__(self) -> None:
         tensors = copy.deepcopy(self.TENSORS)
         randn = torch.randn(2) * 8
