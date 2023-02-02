@@ -236,6 +236,14 @@ class TestTruedivRtruediv:
         for t1, t2 in zip(tensors__div__, tensors__rdiv__):
             assert torch.all(torch.abs(t1 - t2) < 1e-6)
 
+    @staticmethod
+    def test__itruediv__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors /= 2
+
+        for tensor in tensors:
+            assert torch.all(tensor == torch.ones(2) / 2)
+
 
 @pytest.mark.skipif(
     version.parse(torch.__version__) < version.parse("1.6"),
