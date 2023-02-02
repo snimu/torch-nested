@@ -216,6 +216,37 @@ class TestMulRmul:
             assert torch.all(tensor == torch.ones(2) * 2)
 
 
+class TestMatmulRmatmulImatmul:
+    """Tests for the `__matmul__"-, "__rmatmul__"-, and "__imatmul__"-methods."""
+
+    @staticmethod
+    def test__matmul__() -> None:
+        tensors = NestedTensors([torch.ones(2, 2), torch.ones(2, 2)])
+        randn = torch.randn((2, 2))
+        tensors__matmul__ = tensors @ randn
+
+        for tensor, tensor_matmul in zip(tensors, tensors__matmul__):
+            assert torch.all(tensor_matmul == (tensor @ randn))
+
+    @staticmethod
+    def test__rmatmul__() -> None:
+        tensors = NestedTensors([torch.ones(2, 2), torch.ones(2, 2)])
+        randn = torch.randn((2, 2))
+        tensors__rmatmul__ = randn @ tensors
+
+        for tensor, tensor_matmul in zip(tensors, tensors__rmatmul__):
+            assert torch.all(tensor_matmul == (randn @ tensor))
+
+    @staticmethod
+    def test__imatmul__() -> None:
+        tensors = NestedTensors([torch.ones(2, 2), torch.ones(2, 2)])
+        randn = torch.randn((2, 2))
+        tensors @= randn
+
+        for tensor in tensors:
+            assert torch.all(tensor == (torch.ones(2, 2) @ randn))
+
+
 class TestTruedivRtruediv:
     """Tests for the `__truediv__"-method."""
 
