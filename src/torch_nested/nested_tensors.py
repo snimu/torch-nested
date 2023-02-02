@@ -151,6 +151,17 @@ class NestedTensors:
         self.data = res.data
         return self
 
+    def __floordiv__(self, other: Any, /) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: t // o)
+
+    def __rfloordiv__(self, other: Any, /) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: o // t)
+
+    def __ifloordiv__(self, other: Any, /) -> NestedTensors:
+        res = self // other
+        self.data = res.data
+        return self
+
     def __rshift__(self, other: Any, /) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t >> o)
 

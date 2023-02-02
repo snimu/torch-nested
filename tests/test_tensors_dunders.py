@@ -195,6 +195,34 @@ class TestTruedivRtruedivItruediv:
             assert torch.all(tensor == torch.ones(2) / 2)
 
 
+class TestFloordivs:
+    """Tests for the different floordiv-methods."""
+
+    TENSORS = NestedTensors([torch.randn(2) * 4, torch.randn(2) * 4])
+
+    def test__floordiv__(self) -> None:
+        tensors = copy.deepcopy(self.TENSORS)
+        tensors__fd__ = tensors // 2
+
+        for tensor, tensor_fd in zip(tensors, tensors__fd__):
+            assert torch.all(tensor_fd == tensor // 2)
+
+    def test__rfloordiv__(self) -> None:
+        tensors = copy.deepcopy(self.TENSORS)
+        randn = torch.randn(2) * 8
+        tensor__rfd__ = randn // tensors
+
+        for tensor, tensor_rfd in zip(tensors, tensor__rfd__):
+            assert torch.all(tensor_rfd == randn // tensor)
+
+    def test__ifloordiv__(self) -> None:
+        tensors = copy.deepcopy(self.TENSORS)
+        tensors //= 2
+
+        for i, tensor in enumerate(tensors):
+            assert torch.all(tensor == self.TENSORS[i] // 2)
+
+
 class TestShifts:
     """Tests for the different shift-methods."""
 
