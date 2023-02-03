@@ -113,6 +113,9 @@ class NestedTensors:
     def __neg__(self) -> NestedTensors:
         return self._math_op(None, op=lambda t, _: -t)
 
+    def __pos__(self) -> NestedTensors:
+        return self
+
     def __add__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t + o)
 

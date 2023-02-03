@@ -107,6 +107,11 @@ def test__neg__() -> None:
         assert torch.all(tensor_neg == -tensor)
 
 
+def test__pos__() -> None:
+    tensors = NestedTensors(INPUT_DATA)
+    assert tensors == +tensors
+
+
 class TestComparisons:
     """Tests for <, >, >=, <=."""
 
