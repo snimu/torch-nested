@@ -80,6 +80,16 @@ def test__and__() -> None:
         assert torch.all(tensor_and == (tensor and randn))
 
 
+def test__invert__() -> None:
+    tensors = NestedTensors(
+        [torch.ones(2, dtype=torch.int8), torch.ones(2, dtype=torch.int8)]
+    )
+    tensors__invert__ = ~tensors
+
+    for tensor, tensor_invert in zip(tensors, tensors__invert__):
+        assert torch.all(~tensor == tensor_invert)
+
+
 class TestAddRaddIadd:
     """Tests for the `__add__`-, `__radd__`-, and `__iadd__`-methods."""
 

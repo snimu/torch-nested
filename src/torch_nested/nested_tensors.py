@@ -110,6 +110,9 @@ class NestedTensors:
     def __abs__(self) -> NestedTensors:
         return self._math_op(None, op=lambda t, _: abs(t))
 
+    def __invert__(self) -> NestedTensors:
+        return self._math_op(None, op=lambda t, _: ~t)
+
     def __and__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t and o)
 
