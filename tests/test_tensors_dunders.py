@@ -80,6 +80,15 @@ def test__and__() -> None:
         assert torch.all(tensor_and == (tensor and randn))
 
 
+def test__or__() -> None:
+    tensors = NestedTensors([torch.randn(1), torch.randn(1)])
+    randn = torch.randn(1)
+    tensors__or__ = tensors or randn
+
+    for tensor, tensor_or in zip(tensors, tensors__or__):
+        assert torch.all(tensor_or == (tensor or randn))
+
+
 def test__invert__() -> None:
     tensors = NestedTensors(
         [torch.ones(2, dtype=torch.int8), torch.ones(2, dtype=torch.int8)]
