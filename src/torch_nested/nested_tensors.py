@@ -113,9 +113,6 @@ class NestedTensors:
     def __neg__(self) -> NestedTensors:
         return self._math_op(None, op=lambda t, _: -t)
 
-    def __and__(self, other: Any) -> NestedTensors:
-        return self._math_op(other, op=lambda t, o: t and o)
-
     def __add__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t + o)
 
@@ -218,6 +215,9 @@ class NestedTensors:
 
     def __ge__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t >= o)
+
+    def __and__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: t and o)
 
     def _math_op(self, other: Any, op: Callable[[Any, Any], Any]) -> NestedTensors:
         data = copy.deepcopy(self.data)
