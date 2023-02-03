@@ -168,6 +168,17 @@ class NestedTensors:
         self.data = res.data
         return self
 
+    def __mod__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: t % o)
+
+    def __rmod__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: o % t)
+
+    def __imod__(self, other: Any) -> NestedTensors:
+        res = self % other
+        self.data = res.data
+        return self
+
     def __rshift__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t >> o)
 

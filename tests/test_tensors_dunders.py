@@ -125,6 +125,40 @@ class TestComparisons:
             assert torch.all(tensor_ge == (tensor >= self.RANDN))
 
 
+class TestMod:
+    """Tests for ``__mod__`-, `__rmod__`-, and `__imod__`-methods."""
+
+    @property
+    def tensors_(self) -> NestedTensors:
+        return NestedTensors(
+            [torch.ones(3, dtype=torch.int8) * 10, torch.ones(3, dtype=torch.int8) * 10]
+        )
+
+    def test__mod__(self) -> None:
+        tensors = self.tensors_
+        tensors__mod__ = tensors % 3
+
+        for tensor, tensor_mod in zip(tensors, tensors__mod__):
+            assert torch.all((tensor % 3) == tensor_mod)
+
+    def test__rmod__(self) -> None:
+        tensors = self.tensors_
+        randn = torch.randn(3) * 1000
+        tensors__rmod__ = randn % tensors
+
+        for tensor, tensor_rmod in zip(tensors, tensors__rmod__):
+            assert torch.all((randn % tensor) == tensor_rmod)
+
+    def test__imod__(self) -> None:
+        tensors = self.tensors_
+        tensors_control = copy.deepcopy(tensors)
+
+        tensors %= 3
+
+        for tensor, tensor_control in zip(tensors, tensors_control):
+            assert torch.all(tensor == (tensor_control % 3))
+
+
 class TestAddRaddIadd:
     """Tests for the `__add__`-, `__radd__`-, and `__iadd__`-methods."""
 
