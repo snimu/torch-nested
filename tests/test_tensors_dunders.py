@@ -90,6 +90,14 @@ def test__invert__() -> None:
         assert torch.all(~tensor == tensor_invert)
 
 
+def test__neg__() -> None:
+    tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+    tensors__neg__ = -tensors
+
+    for tensor, tensor_neg in zip(tensors, tensors__neg__):
+        assert torch.all(tensor_neg == -tensor)
+
+
 class TestComparisons:
     """Tests for <, >, >=, <=."""
 
