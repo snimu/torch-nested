@@ -71,6 +71,15 @@ def test__abs__() -> None:
         assert torch.all(tensor_abs == abs(tensor))
 
 
+def test__and__() -> None:
+    tensors = NestedTensors([torch.randn(1), torch.randn(1)])
+    randn = torch.randn(1)
+    tensors__and__ = tensors and randn
+
+    for tensor, tensor_and in zip(tensors, tensors__and__):
+        assert torch.all(tensor_and == (tensor and randn))
+
+
 class TestAddRaddIadd:
     """Tests for the `__add__`-, `__radd__`-, and `__iadd__`-methods."""
 
