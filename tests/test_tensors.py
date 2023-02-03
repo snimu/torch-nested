@@ -45,6 +45,22 @@ def test_size() -> None:
     assert size[5].data == torch.Size([3, 3])  # type: ignore[union-attr, index]
 
 
+def test_element_sizes() -> None:
+    tensors = NestedTensors(INPUT_DATA)
+    element_sizes = tensors.element_sizes()
+
+    for tensor, es in zip(tensors, element_sizes):
+        assert es == tensor.element_size()
+
+
+def test_sizes() -> None:
+    tensors = NestedTensors(INPUT_DATA)
+    sizes = tensors.sizes()
+
+    for tensor, size in zip(tensors, sizes):
+        assert size == tensor.size()
+
+
 def test_just_tensor() -> None:
     tensors = NestedTensors(torch.ones(3))
 
