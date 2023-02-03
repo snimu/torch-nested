@@ -126,6 +126,17 @@ class NestedTensors:
         self.data = res.data
         return self
 
+    def __sub__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: t - o)
+
+    def __rsub__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: o - t)
+
+    def __isub__(self, other: Any) -> NestedTensors:
+        res = self - other
+        self.data = res.data
+        return self
+
     def __mul__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t * o)
 

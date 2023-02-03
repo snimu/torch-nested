@@ -226,6 +226,42 @@ class TestAddRaddIadd:
             assert torch.all(tensor == torch.ones(2) + 1)
 
 
+class TestSubRsubIsub:
+    """Tests for the `__sub__`-, `__rsub__`-, and `__isub__`-methods."""
+
+    @staticmethod
+    def test__sub__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors_control = tensors - 1
+
+        for tensor, tensor_control in zip(tensors, tensors_control):
+            assert torch.all(tensor - 1 == tensor_control)
+
+        tensors_control = tensors - torch.ones(2)
+        for tensor, tensor_control in zip(tensors, tensors_control):
+            assert torch.all(tensor - torch.ones(2) == tensor_control)
+
+        tensors = NestedTensors([torch.ones(2), torch.ones(3)])
+        with pytest.raises(RuntimeError):
+            _ = tensors + torch.ones(2)
+
+    @staticmethod
+    def test__rsub__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors__radd__ = 1 - tensors
+
+        for tensor, tensorr in zip(tensors, tensors__radd__):
+            assert torch.all(1 - tensor == tensorr)
+
+    @staticmethod
+    def test__iadd__() -> None:
+        tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+        tensors -= 1
+
+        for tensor in tensors:
+            assert torch.all(tensor == torch.ones(2) - 1)
+
+
 class TestMulRmulImul:
     """Tests for the `__mul__`-, `__ramul__`-, and `__imul__`-methods."""
 
