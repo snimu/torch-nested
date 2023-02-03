@@ -72,21 +72,25 @@ def test__abs__() -> None:
 
 
 def test__and__() -> None:
-    tensors = NestedTensors([torch.randn(1), torch.randn(1)])
-    randn = torch.randn(1)
-    tensors__and__ = tensors and randn
+    randn = torch.randn(3) * 2
+    randn = randn.to(dtype=torch.int8)
+    tensors = NestedTensors([copy.deepcopy(randn), copy.deepcopy(randn)])
+    ones = torch.ones(3, dtype=torch.int8)
+    tensors__and__ = tensors & ones
 
     for tensor, tensor_and in zip(tensors, tensors__and__):
-        assert torch.all(tensor_and == (tensor and randn))
+        assert torch.all(tensor_and == (tensor & ones))
 
 
 def test__or__() -> None:
-    tensors = NestedTensors([torch.randn(1), torch.randn(1)])
-    randn = torch.randn(1)
-    tensors__or__ = tensors or randn
+    randn = torch.randn(3) * 2
+    randn = randn.to(dtype=torch.int8)
+    tensors = NestedTensors([copy.deepcopy(randn), copy.deepcopy(randn)])
+    ones = torch.ones(3, dtype=torch.int8)
+    tensors__or__ = tensors | ones
 
     for tensor, tensor_or in zip(tensors, tensors__or__):
-        assert torch.all(tensor_or == (tensor or randn))
+        assert torch.all(tensor_or == (tensor | ones))
 
 
 def test__invert__() -> None:
