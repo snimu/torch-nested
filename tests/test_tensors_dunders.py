@@ -158,6 +158,10 @@ class TestMod:
         for tensor, tensor_mod in zip(tensors, tensors__mod__):
             assert torch.all((tensor % 3) == tensor_mod)
 
+    @pytest.mark.skipif(
+        version.parse(torch.__version__) < version.parse("1.5.1"),
+        reason="Doesn't work for PyTorch 1.4",
+    )
     def test__rmod__(self) -> None:
         tensors = self.tensors_
         randn = torch.randn(3) * 1000
