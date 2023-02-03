@@ -255,6 +255,14 @@ class NestedTensors:
     def __or__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t | o)
 
+    def __ror__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: o | t)
+
+    def __ior__(self, other: Any) -> NestedTensors:
+        res = self | other
+        self.data = res.data
+        return self
+
     def __xor__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t ^ o)
 
