@@ -71,15 +71,39 @@ def test__abs__() -> None:
         assert torch.all(tensor_abs == abs(tensor))
 
 
-def test__and__() -> None:
-    randn = torch.randn(3) * 2
-    randn = randn.to(dtype=torch.int8)
-    tensors = NestedTensors([copy.deepcopy(randn), copy.deepcopy(randn)])
-    ones = torch.ones(3, dtype=torch.int8)
-    tensors__and__ = tensors & ones
+class TestAndRandIand:
+    """Tests for the different and-methods."""
 
-    for tensor, tensor_and in zip(tensors, tensors__and__):
-        assert torch.all(tensor_and == (tensor & ones))
+    @property
+    def tensors_(self) -> NestedTensors:
+        randn = torch.randn(3) * 2
+        randn = randn.to(dtype=torch.int8)
+        return NestedTensors([copy.deepcopy(randn), copy.deepcopy(randn)])
+
+    def test__and__(self) -> None:
+        tensors = self.tensors_
+        ones = torch.ones(3, dtype=torch.int8)
+        tensors__and__ = tensors & ones
+
+        for tensor, tensor_and in zip(tensors, tensors__and__):
+            assert torch.all(tensor_and == (tensor & ones))
+
+    def test__rand__(self) -> None:
+        tensors = self.tensors_
+        ones = torch.ones(3, dtype=torch.int8)
+        tensors__rand__ = ones & tensors
+
+        for tensor, tensor_rand in zip(tensors, tensors__rand__):
+            assert torch.all(tensor_rand == (ones & tensor))
+
+    def test__iand__(self) -> None:
+        tensors = self.tensors_
+        tensors_control = copy.deepcopy(tensors)
+        ones = torch.ones(3, dtype=torch.int8)
+        tensors &= ones
+
+        for t, tc in zip(tensors, tensors_control):
+            assert torch.all(t == (tc & ones))
 
 
 def test__or__() -> None:

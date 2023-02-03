@@ -244,6 +244,14 @@ class NestedTensors:
     def __and__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t & o)
 
+    def __rand__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: o & t)
+
+    def __iand__(self, other: Any) -> NestedTensors:
+        res = self & other
+        self.data = res.data
+        return self
+
     def __or__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t | o)
 
