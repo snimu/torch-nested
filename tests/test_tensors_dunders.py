@@ -93,6 +93,41 @@ def test__or__() -> None:
         assert torch.all(tensor_or == (tensor | ones))
 
 
+class TestXor:
+    """Tests for the different xor-methods."""
+
+    @property
+    def tensors_(self) -> NestedTensors:
+        randn = torch.randn(3) * 2
+        randn = randn.to(dtype=torch.int8)
+        return NestedTensors([copy.deepcopy(randn), copy.deepcopy(randn)])
+
+    def test__xor__(self) -> None:
+        tensors = self.tensors_
+        ones = torch.ones(3, dtype=torch.int8)
+        tensors__xor__ = tensors ^ ones
+
+        for tensor, tensor_or in zip(tensors, tensors__xor__):
+            assert torch.all(tensor_or == (tensor ^ ones))
+
+    def test__rxor__(self) -> None:
+        tensors = self.tensors_
+        ones = torch.ones(3, dtype=torch.int8)
+        tensors__xor__ = ones ^ tensors
+
+        for tensor, tensor_or in zip(tensors, tensors__xor__):
+            assert torch.all(tensor_or == (ones ^ tensor))
+
+    def test__ixor__(self) -> None:
+        tensors = self.tensors_
+        tensors_control = copy.deepcopy(tensors)
+        ones = torch.ones(3, dtype=torch.int8)
+        tensors ^= ones
+
+        for t, tc in zip(tensors, tensors_control):
+            assert torch.all(t == (tc ^ ones))
+
+
 def test__invert__() -> None:
     tensors = NestedTensors(
         [torch.ones(2, dtype=torch.int8), torch.ones(2, dtype=torch.int8)]

@@ -247,6 +247,17 @@ class NestedTensors:
     def __or__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t | o)
 
+    def __xor__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: t ^ o)
+
+    def __rxor__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: o ^ t)
+
+    def __ixor__(self, other: Any) -> NestedTensors:
+        res = self ^ other
+        self.data = res.data
+        return self
+
     def _math_op(self, other: Any, op: Callable[[Any, Any], Any]) -> NestedTensors:
         data = copy.deepcopy(self.data)
 
