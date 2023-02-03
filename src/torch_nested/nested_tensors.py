@@ -110,9 +110,6 @@ class NestedTensors:
     def __abs__(self) -> NestedTensors:
         return self._math_op(None, op=lambda t, _: abs(t))
 
-    def __invert__(self) -> NestedTensors:
-        return self._math_op(None, op=lambda t, _: ~t)
-
     def __and__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t and o)
 
@@ -192,6 +189,9 @@ class NestedTensors:
         res = self << other
         self.data = res.data
         return self
+
+    def __invert__(self) -> NestedTensors:
+        return self._math_op(None, op=lambda t, _: ~t)
 
     def _math_op(self, other: Any, op: Callable[[Any, Any], Any]) -> NestedTensors:
         data = copy.deepcopy(self.data)
