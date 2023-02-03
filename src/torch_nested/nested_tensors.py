@@ -107,6 +107,9 @@ class NestedTensors:
             data=self.data, newline=True, target_type=f"{type(self).__name__}"
         )
 
+    def __abs__(self) -> NestedTensors:
+        return self._math_op(None, op=lambda t, _: abs(t))
+
     def __add__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t + o)
 

@@ -63,6 +63,14 @@ def test__setitem__() -> None:
         tensors[0] = torch.zeros(3)
 
 
+def test__abs__() -> None:
+    tensors = NestedTensors([torch.randn(3), torch.randn(3), -torch.ones(3)])
+    tensors__abs__ = abs(tensors)
+
+    for tensor, tensor_abs in zip(tensors, tensors__abs__):
+        assert torch.all(tensor_abs == abs(tensor))
+
+
 class TestAddRaddIadd:
     """Tests for the `__add__`-, `__radd__`-, and `__iadd__`-methods."""
 
