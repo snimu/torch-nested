@@ -90,6 +90,41 @@ def test__invert__() -> None:
         assert torch.all(~tensor == tensor_invert)
 
 
+class TestComparisons:
+    """Tests for <, >, >=, <=."""
+
+    TENSORS = NestedTensors([torch.randn(3), torch.randn(3)])
+    RANDN = torch.randn(3)
+
+    def test__lt__(self) -> None:
+        tensors = copy.deepcopy(self.TENSORS)
+        tensors__lt__ = tensors < self.RANDN
+
+        for tensor, tensor_lt in zip(tensors, tensors__lt__):
+            assert torch.all(tensor_lt == (tensor < self.RANDN))
+
+    def test__le__(self) -> None:
+        tensors = copy.deepcopy(self.TENSORS)
+        tensors__le__ = tensors <= self.RANDN
+
+        for tensor, tensor_le in zip(tensors, tensors__le__):
+            assert torch.all(tensor_le == (tensor <= self.RANDN))
+
+    def test__gt__(self) -> None:
+        tensors = copy.deepcopy(self.TENSORS)
+        tensors__gt__ = tensors > self.RANDN
+
+        for tensor, tensor_gt in zip(tensors, tensors__gt__):
+            assert torch.all(tensor_gt == (tensor > self.RANDN))
+
+    def test__ge__(self) -> None:
+        tensors = copy.deepcopy(self.TENSORS)
+        tensors__ge__ = tensors >= self.RANDN
+
+        for tensor, tensor_ge in zip(tensors, tensors__ge__):
+            assert torch.all(tensor_ge == (tensor >= self.RANDN))
+
+
 class TestAddRaddIadd:
     """Tests for the `__add__`-, `__radd__`-, and `__iadd__`-methods."""
 

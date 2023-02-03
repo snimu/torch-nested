@@ -193,6 +193,18 @@ class NestedTensors:
     def __invert__(self) -> NestedTensors:
         return self._math_op(None, op=lambda t, _: ~t)
 
+    def __lt__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: t < o)
+
+    def __le__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: t <= o)
+
+    def __gt__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: t > o)
+
+    def __ge__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: t >= o)
+
     def _math_op(self, other: Any, op: Callable[[Any, Any], Any]) -> NestedTensors:
         data = copy.deepcopy(self.data)
 
