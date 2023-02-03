@@ -4,6 +4,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.4+-blue.svg)](https://pypi.org/project/torch/1.4.0/)
 
 [![PyPI](https://img.shields.io/pypi/v/torch-nested)](https://pypi.org/project/torch-nested/)
+![Wheel](https://img.shields.io/pypi/wheel/torch-nested)
 
 [![Tests](https://github.com/snimu/torch-nested/actions/workflows/test.yml/badge.svg)](https://github.com/snimu/torch-nested/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/snimu/torch-nested/branch/main/graph/badge.svg)](https://codecov.io/gh/snimu/torch-nested)
