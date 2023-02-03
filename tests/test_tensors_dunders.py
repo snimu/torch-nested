@@ -396,3 +396,37 @@ class TestShifts:
 
         for i, tensor in enumerate(tensors):
             assert torch.all(tensor == self.TENSORS[i] >> 1)
+
+
+class TestPow:
+    """Tests for the `__pow__`-, `__rpow__`-, and `__ipow__`-methods."""
+
+    RANDN = torch.randn(3)
+
+    @property
+    def input_data(self) -> list[torch.Tensor]:
+        return [copy.deepcopy(self.RANDN), copy.deepcopy(self.RANDN)]
+
+    def test__pow__(self) -> None:
+        tensors = NestedTensors(self.input_data)
+        tensors__rpow__ = tensors**2
+
+        for tensor, tensor_rpow in zip(tensors, tensors__rpow__):
+            assert torch.all(tensor_rpow == (tensor**2))
+
+    def test__rpow__(self) -> None:
+        tensors = NestedTensors(self.input_data)
+        tensors__rpow__ = 2**tensors
+
+        for tensor, tensor_rpow in zip(tensors, tensors__rpow__):
+            assert torch.all(tensor_rpow == (2**tensor))
+
+    def test__ipow__(self) -> None:
+        tensors = NestedTensors(self.input_data)
+        tensors_control = NestedTensors(self.input_data)
+        tensors **= 2
+
+        assert tensors != tensors_control
+
+        for t, tc in zip(tensors, tensors_control):
+            assert torch.all(t == (tc**2))

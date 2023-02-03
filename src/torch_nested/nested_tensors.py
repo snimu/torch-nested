@@ -28,7 +28,6 @@ class NestedTensors:
 
     def __getitem__(self, key: Any) -> torch.Tensor:
         x = self.data
-
         for step in self._access_keys[key]:
             if isinstance(step, AccessTensorsAttr):
                 x = x.tensors
@@ -136,6 +135,18 @@ class NestedTensors:
     def __imul__(self, other: Any) -> NestedTensors:
         res = self * other
         self.data = res.data
+        return self
+
+    def __pow__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: t**o)
+
+    def __rpow__(self, other: Any) -> NestedTensors:
+        return self._math_op(other, op=lambda t, o: o**t)
+
+    def __ipow__(self, other: Any) -> NestedTensors:
+        res = self**other
+        self.data = res.data
+        self._update_info()
         return self
 
     def __matmul__(self, other: Any) -> NestedTensors:
