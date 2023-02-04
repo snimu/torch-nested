@@ -455,6 +455,26 @@ class NestedTensors:
     ) -> NestedTensors:
         return self._exec_inplace(torch.addmm, mat1, mat2, beta=beta, alpha=alpha)
 
+    def addmv(
+        self,
+        mat: torch.Tensor,
+        vec: torch.Tensor,
+        *,
+        beta: TORCH_NUMBER_TYPES = 1,
+        alpha: TORCH_NUMBER_TYPES = 1,
+    ) -> NestedTensors:
+        return self._exec(torch.addmv, mat, vec, beta=beta, alpha=alpha)
+
+    def addmv_(
+        self,
+        mat: torch.Tensor,
+        vec: torch.Tensor,
+        *,
+        beta: TORCH_NUMBER_TYPES = 1,
+        alpha: TORCH_NUMBER_TYPES = 1,
+    ) -> NestedTensors:
+        return self._exec_inplace(torch.addmv, mat, vec, beta=beta, alpha=alpha)
+
     def to(self, *args: Any, **kwargs: Any) -> NestedTensors:
         """
         See [torch.Tensor.to]
