@@ -276,3 +276,34 @@ class TestAcos:
         tensors_control.acos_()
 
         assert (tensors == tensors_control).all()
+
+
+class TestTo:
+    """Tests for the `to`-method."""
+
+    @staticmethod
+    def test_to_dtype() -> None:
+        tensors = NestedTensors(
+            [torch.ones(2, dtype=torch.float32), torch.ones(2, dtype=torch.float32)]
+        )
+        tensors_same = tensors.to(dtype=torch.float32)
+        assert tensors_same is tensors
+
+        tensors_moved = tensors.to(dtype=torch.int8)
+        for tensor in tensors_moved:
+            assert tensor.dtype is torch.int8
+
+    @staticmethod
+    def test_to_same_device() -> None:
+        tensors = NestedTensors([torch.randn(2), torch.randn(2)])
+        tensors_same = tensors.to("cpu")
+        assert tensors is tensors_same
+
+    @staticmethod
+    @pytest.mark.skipif(not torch.cuda.is_available(), reason="Needs CUDA to work.")
+    def test_to_other_device() -> None:
+        tensors = NestedTensors([torch.randn(2), torch.randn(2)])
+        tensors_moved = tensors.to("cuda")
+
+        for tensor in tensors_moved:
+            assert tensor.is_cuda

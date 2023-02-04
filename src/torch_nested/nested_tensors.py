@@ -377,6 +377,28 @@ class NestedTensors:
             torch.add, other, alpha=alpha  # type: ignore[arg-type]
         )
 
+    def to(self, *args: Any, **kwargs: Any) -> NestedTensors:
+        """
+        See [torch.Tensor.to]
+        (https://pytorch.org/docs/stable/generated/torch.Tensor.to.html#torch.Tensor.to)
+
+        :return: `self` if `dtype` and `device` are already correct, otherwise
+                a `NestedTensor` of the desired `dtype` and `device`.
+        """
+        res = copy.deepcopy(self)
+
+        for i, r in enumerate(res):
+            res[i] = r.to(*args, **kwargs)
+
+        return_self = True
+        for t, r in zip(self, res):
+            same = t.dtype == r.dtype and t.device == r.device
+            return_self = return_self and same
+
+        if return_self:
+            return self
+        return res
+
     def _update_info(self, dim: int | None = None) -> NestedSize | torch.Size | None:
         # Reset so that self._access_key is filled from scratch, not appended to!
         self._access_keys = []
