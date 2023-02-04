@@ -20,6 +20,15 @@ SIZE_TYPES = Optional[
 NUMBER_TYPES = Optional[Union[int, float, complex]]
 
 EXEC_CALLABLE_TYPES = Union[
-    Callable[[Any, ...], torch.Tensor],  # type: ignore[misc]
+    Callable[[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any], torch.Tensor],
+    Callable[[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any], torch.Tensor],
+    Callable[[Any, Any, Any, Any, Any, Any, Any, Any, Any], torch.Tensor],
+    Callable[[Any, Any, Any, Any, Any, Any, Any, Any], torch.Tensor],
+    Callable[[Any, Any, Any, Any, Any, Any, Any], torch.Tensor],
+    Callable[[Any, Any, Any, Any, Any, Any], torch.Tensor],
+    Callable[[Any, Any, Any, Any, Any], torch.Tensor],
+    Callable[[Any, Any, Any, Any], torch.Tensor],
+    Callable[[Any, Any, Any], torch.Tensor],
+    Callable[[Any, Any], torch.Tensor],
     Callable[[Any], torch.Tensor],
 ]
