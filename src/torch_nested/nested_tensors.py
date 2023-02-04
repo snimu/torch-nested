@@ -290,7 +290,7 @@ class NestedTensors:
                 # Don't use {other=} because it doesn't work with old Python
                 raise RuntimeError(
                     f"Couldn't write to self[{i}], "
-                    f"given other={other} and self[i]={self[i]}."
+                    f"given other={o} and self[i]={self[i]}."
                 ) from e
 
         if isinstance(other, NestedTensors):
@@ -366,6 +366,9 @@ class NestedTensors:
         )
 
     def _update_info(self, dim: int | None = None) -> NestedSize | torch.Size | None:
+        self._access_keys = (
+            []
+        )  # Reset so that it is filled from scratch, not appended to!
         size = self._extract_info(self.data, [], dim=dim)
 
         if not isinstance(size, torch.Size):
