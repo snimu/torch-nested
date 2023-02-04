@@ -335,6 +335,32 @@ class TestAddcdiv:
             assert torch.all(t == tc.addcdiv(self.T1, self.T2, value=0.5))
 
 
+class TestAddcmul:
+    """Tests for `addcmul` and `addcmul_`."""
+
+    T1 = torch.randn((3, 3, 3))
+    T2 = torch.randn((3, 3, 3))
+
+    @property
+    def tensors(self) -> NestedTensors:
+        return NestedTensors([torch.randn((3, 3, 3)), torch.randn((3, 3, 3))])
+
+    def test_addcmul(self) -> None:
+        tensors = self.tensors
+        tensors_addcmul = tensors.addcmul(self.T1, self.T2, value=0.5)
+
+        for t, ta in zip(tensors, tensors_addcmul):
+            assert torch.all(ta == t.addcmul(self.T1, self.T2, value=0.5))
+
+    def test_addcmul_(self) -> None:
+        tensors = self.tensors
+        tensors_control = copy.deepcopy(tensors)
+        tensors.addcmul_(self.T1, self.T2, value=0.5)
+
+        for t, tc in zip(tensors, tensors_control):
+            assert torch.all(t == tc.addcmul(self.T1, self.T2, value=0.5))
+
+
 class TestTo:
     """Tests for the `to`-method."""
 

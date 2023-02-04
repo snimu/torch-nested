@@ -404,6 +404,16 @@ class NestedTensors:
     ) -> NestedTensors:
         return self._exec_inplace(torch.addcdiv, tensor1, tensor2, value=value)
 
+    def addcmul(
+        self, tensor1: torch.Tensor, tensor2: torch.Tensor, *, value: NUMBER_TYPES = 1
+    ) -> NestedTensors:
+        return self._exec(torch.addcmul, tensor1, tensor2, value=value)
+
+    def addcmul_(
+        self, tensor1: torch.Tensor, tensor2: torch.Tensor, *, value: NUMBER_TYPES = 1
+    ) -> NestedTensors:
+        return self._exec_inplace(torch.addcmul, tensor1, tensor2, value=value)
+
     def to(self, *args: Any, **kwargs: Any) -> NestedTensors:
         """
         See [torch.Tensor.to]
