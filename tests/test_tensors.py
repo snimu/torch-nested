@@ -242,3 +242,37 @@ class TestAdd:
 
         for tensor1, tensor2 in zip(tensors1, tensors2):
             assert torch.all(tensor1 == tensor2)
+
+
+class TestAcos:
+    """Tests for `acos`, `arccos`, `acos_`, and `arccos_`."""
+
+    @property
+    def tensors(self) -> NestedTensors:
+        return NestedTensors([torch.randn(5).clip(0, 1), torch.randn(5).clip(0, 1)])
+
+    def test_acos(self) -> None:
+        tensors = self.tensors
+        tensors_acos = tensors.acos()
+
+        for t, ta in zip(tensors, tensors_acos):
+            assert torch.all(t.acos() == ta)
+
+    def test_arccos(self) -> None:
+        tensors = self.tensors
+        assert (tensors.acos() == tensors.arccos()).all()
+
+    def test_acos_(self) -> None:
+        tensors = self.tensors
+        tensors_control = copy.deepcopy(tensors)
+        tensors.acos_()
+
+        assert (tensors == tensors_control.acos()).all()
+
+    def test_arccos_(self) -> None:
+        tensors = self.tensors
+        tensors_control = copy.deepcopy(tensors)
+        tensors.arccos_()
+        tensors_control.acos_()
+
+        assert (tensors == tensors_control).all()

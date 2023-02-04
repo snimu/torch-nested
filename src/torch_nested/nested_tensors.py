@@ -351,6 +351,18 @@ class NestedTensors:
     def absolute_(self) -> NestedTensors:
         return self.abs_()
 
+    def acos(self) -> NestedTensors:
+        return self._exec(torch.acos)
+
+    def acos_(self) -> NestedTensors:
+        return self._exec_inplace(torch.acos)
+
+    def arccos(self) -> NestedTensors:
+        return self.acos()
+
+    def arccos_(self) -> NestedTensors:
+        return self.acos_()
+
     def add(
         self, other: torch.Tensor | NUMBER_TYPES, *, alpha: NUMBER_TYPES = 1
     ) -> NestedTensors:
