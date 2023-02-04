@@ -413,6 +413,32 @@ class TestAddmv:
             assert torch.all(t == tc.addmv(self.M, self.V, beta=1.0, alpha=0.5))
 
 
+class TestAddr:
+    """Tests for `addr` and `addr_`."""
+
+    V1 = torch.arange(1.0, 4.0)
+    V2 = torch.arange(1.0, 3.0)
+
+    @property
+    def tensors(self) -> NestedTensors:
+        return NestedTensors([torch.randn((3, 2)), torch.randn((3, 2))])
+
+    def test_addr(self) -> None:
+        tensors = self.tensors
+        tensors_addr = tensors.addr(self.V1, self.V2, beta=1.0, alpha=1.0)
+
+        for t, ta in zip(tensors, tensors_addr):
+            assert torch.all(ta == t.addr(self.V1, self.V2, beta=1.0, alpha=1.0))
+
+    def test_addr_(self) -> None:
+        tensors = self.tensors
+        tensors_control = copy.deepcopy(tensors)
+        tensors.addr_(self.V1, self.V2, beta=1.0, alpha=0.5)
+
+        for t, tc in zip(tensors, tensors_control):
+            assert torch.all(t == tc.addr(self.V1, self.V2, beta=1.0, alpha=0.5))
+
+
 class TestTo:
     """Tests for the `to`-method."""
 
