@@ -366,9 +366,8 @@ class NestedTensors:
         )
 
     def _update_info(self, dim: int | None = None) -> NestedSize | torch.Size | None:
-        self._access_keys = (
-            []
-        )  # Reset so that it is filled from scratch, not appended to!
+        # Reset so that self._access_key is filled from scratch, not appended to!
+        self._access_keys = []
         size = self._extract_info(self.data, [], dim=dim)
 
         if not isinstance(size, torch.Size):
