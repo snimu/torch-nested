@@ -7,7 +7,7 @@ import torch
 
 from .nested_size import NestedSize
 from .str_repr import create_str_repr
-from .type_definitions import NUMBER_TYPES, SIZE_TYPES
+from .type_definitions import EXEC_CALLABLE_TYPES, NUMBER_TYPES, SIZE_TYPES
 from .type_signals import (
     AccessDataAttr,
     AccessTensorsAttr,
@@ -366,16 +366,12 @@ class NestedTensors:
     def add(
         self, other: torch.Tensor | NUMBER_TYPES, *, alpha: NUMBER_TYPES = 1
     ) -> NestedTensors:
-        # Ignore arg-type because torch.add has weird overloaded function-types
-        return self._exec(torch.add, other, alpha=alpha)  # type: ignore[arg-type]
+        return self._exec(torch.add, other, alpha=alpha)
 
     def add_(
         self, other: torch.Tensor | NUMBER_TYPES, *, alpha: NUMBER_TYPES = 1
     ) -> NestedTensors:
-        # Ignore arg-type because torch.add has weird overloaded function-types
-        return self._exec_inplace(
-            torch.add, other, alpha=alpha  # type: ignore[arg-type]
-        )
+        return self._exec_inplace(torch.add, other, alpha=alpha)
 
     def to(self, *args: Any, **kwargs: Any) -> NestedTensors:
         """
@@ -461,7 +457,7 @@ class NestedTensors:
         return size
 
     def _exec_inplace(
-        self, function: Callable[[Any], torch.Tensor], *args: Any, **kwargs: Any
+        self, function: EXEC_CALLABLE_TYPES, *args: Any, **kwargs: Any
     ) -> NestedTensors:
         for i, tensor in enumerate(self):
             try:
@@ -476,7 +472,7 @@ class NestedTensors:
         return self
 
     def _exec(
-        self, function: Callable[[Any], torch.Tensor], *args: Any, **kwargs: Any
+        self, function: EXEC_CALLABLE_TYPES, *args: Any, **kwargs: Any
     ) -> NestedTensors:
         data_copy = copy.deepcopy(self.data)
 
