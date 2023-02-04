@@ -553,3 +553,11 @@ class TestPow:
 
         for t, tc in zip(tensors, tensors_control):
             assert torch.all(t == (tc**2))
+
+
+def test_math_op_NestedTensors() -> None:
+    tensors = NestedTensors([torch.ones(2), torch.ones(2)])
+    tensors_control = tensors + tensors
+
+    for t, tc in zip(tensors, tensors_control):
+        assert torch.all(t + t == tc)

@@ -277,15 +277,22 @@ class NestedTensors:
     def _math_op(self, other: Any, op: Callable[[Any, Any], Any]) -> NestedTensors:
         data = copy.deepcopy(self.data)
 
-        for i, tensor in enumerate(self):
+        def loop_body(t: torch.Tensor, o: torch.Tensor, i: int) -> None:
             try:
-                data[i] = op(tensor, other)
+                data[i] = op(t, o)
             except Exception as e:
                 # Don't use {other=} because it doesn't work with old Python
                 raise RuntimeError(
-                    f"Couldn't add other to self[{i}], "
-                    f"where other={other} and self[i]={self[i]}."
+                    f"Couldn't write to self[{i}], "
+                    f"given other={other} and self[i]={self[i]}."
                 ) from e
+
+        if isinstance(other, NestedTensors):
+            for i, (t, o) in enumerate(zip(self, other)):
+                loop_body(t, o, i)
+        else:
+            for i, t in enumerate(self):
+                loop_body(t, other, i)
 
         return NestedTensors(data)
 
