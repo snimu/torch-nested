@@ -249,7 +249,7 @@ class TestAcos:
 
     @property
     def tensors(self) -> NestedTensors:
-        return NestedTensors([torch.randn(5).clip(0, 1), torch.randn(5).clip(0, 1)])
+        return NestedTensors([torch.randn(5).clamp(0, 1), torch.randn(5).clamp(0, 1)])
 
     def test_acos(self) -> None:
         tensors = self.tensors
