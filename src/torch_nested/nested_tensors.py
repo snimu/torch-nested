@@ -318,6 +318,12 @@ class NestedTensors:
     def abs_(self) -> NestedTensors:
         return self._exec_inplace(torch.abs)
 
+    def absolute(self) -> NestedTensors:
+        return self.abs()
+
+    def absolute_(self) -> NestedTensors:
+        return self.abs_()
+
     def add(
         self, other: torch.Tensor | NUMBER_TYPES, *, alpha: NUMBER_TYPES = 1
     ) -> NestedTensors:

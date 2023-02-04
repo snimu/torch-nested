@@ -96,6 +96,14 @@ class TestAbs:
             assert torch.all(torch.abs(tensor) == tensor_abs)
 
     @staticmethod
+    def test_absolute() -> None:
+        input_data = [torch.randn(5) for _ in range(5)]
+        tensors = NestedTensors(input_data)
+
+        for t1, t2 in zip(tensors.absolute(), tensors.abs()):
+            assert torch.all(t1 == t2)
+
+    @staticmethod
     def test_abs_() -> None:
         input_data = [torch.randn(5), torch.randn(5), torch.randn(5)]
         tensors = NestedTensors(copy.deepcopy(input_data))
@@ -105,6 +113,18 @@ class TestAbs:
 
         for tensor, tensor_control in zip(tensors, tensors_control):
             assert torch.all(tensor == torch.abs(tensor_control))
+
+    @staticmethod
+    def test_absolute_() -> None:
+        input_data = [torch.randn(5), torch.randn(5), torch.randn(5)]
+        tensors = NestedTensors(copy.deepcopy(input_data))
+        tensors_control = NestedTensors(copy.deepcopy(input_data))
+
+        tensors.absolute_()
+        tensors_control.abs_()
+
+        for t, tc in zip(tensors, tensors_control):
+            assert torch.all(t == tc)
 
 
 @pytest.mark.skipif(
