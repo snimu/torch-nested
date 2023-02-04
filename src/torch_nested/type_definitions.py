@@ -19,6 +19,8 @@ SIZE_TYPES = Optional[
 
 NUMBER_TYPES = Optional[Union[int, float, complex]]
 
+TORCH_NUMBER_TYPES = Union[int, float, bool]
+
 EXEC_CALLABLE_TYPES = Union[
     Callable[[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any], torch.Tensor],
     Callable[[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any], torch.Tensor],

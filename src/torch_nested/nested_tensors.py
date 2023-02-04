@@ -8,7 +8,12 @@ import torch
 
 from .nested_size import NestedSize
 from .str_repr import create_str_repr
-from .type_definitions import EXEC_CALLABLE_TYPES, NUMBER_TYPES, SIZE_TYPES
+from .type_definitions import (
+    EXEC_CALLABLE_TYPES,
+    NUMBER_TYPES,
+    SIZE_TYPES,
+    TORCH_NUMBER_TYPES,
+)
 from .type_signals import (
     AccessDataAttr,
     AccessTensorsAttr,
@@ -365,12 +370,12 @@ class NestedTensors:
         return self.acos_()
 
     def add(
-        self, other: torch.Tensor | NUMBER_TYPES, *, alpha: NUMBER_TYPES = 1
+        self, other: torch.Tensor | NUMBER_TYPES, *, alpha: TORCH_NUMBER_TYPES = 1
     ) -> NestedTensors:
         return self._exec(torch.add, other, alpha=alpha)
 
     def add_(
-        self, other: torch.Tensor | NUMBER_TYPES, *, alpha: NUMBER_TYPES = 1
+        self, other: torch.Tensor | NUMBER_TYPES, *, alpha: TORCH_NUMBER_TYPES = 1
     ) -> NestedTensors:
         return self._exec_inplace(torch.add, other, alpha=alpha)
 
@@ -379,8 +384,8 @@ class NestedTensors:
         batch1: torch.Tensor,
         batch2: torch.Tensor,
         *,
-        beta: NUMBER_TYPES = 1,
-        alpha: NUMBER_TYPES = 1,
+        beta: TORCH_NUMBER_TYPES = 1,
+        alpha: TORCH_NUMBER_TYPES = 1,
     ) -> NestedTensors:
         return self._exec(torch.addbmm, batch1, batch2, beta=beta, alpha=alpha)
 
@@ -389,28 +394,44 @@ class NestedTensors:
         batch1: torch.Tensor,
         batch2: torch.Tensor,
         *,
-        beta: NUMBER_TYPES = 1,
-        alpha: NUMBER_TYPES = 1,
+        beta: TORCH_NUMBER_TYPES = 1,
+        alpha: TORCH_NUMBER_TYPES = 1,
     ) -> NestedTensors:
         return self._exec_inplace(torch.addbmm, batch1, batch2, beta=beta, alpha=alpha)
 
     def addcdiv(
-        self, tensor1: torch.Tensor, tensor2: torch.Tensor, *, value: NUMBER_TYPES = 1
+        self,
+        tensor1: torch.Tensor,
+        tensor2: torch.Tensor,
+        *,
+        value: TORCH_NUMBER_TYPES = 1,
     ) -> NestedTensors:
         return self._exec(torch.addcdiv, tensor1, tensor2, value=value)
 
     def addcdiv_(
-        self, tensor1: torch.Tensor, tensor2: torch.Tensor, *, value: NUMBER_TYPES = 1
+        self,
+        tensor1: torch.Tensor,
+        tensor2: torch.Tensor,
+        *,
+        value: TORCH_NUMBER_TYPES = 1,
     ) -> NestedTensors:
         return self._exec_inplace(torch.addcdiv, tensor1, tensor2, value=value)
 
     def addcmul(
-        self, tensor1: torch.Tensor, tensor2: torch.Tensor, *, value: NUMBER_TYPES = 1
+        self,
+        tensor1: torch.Tensor,
+        tensor2: torch.Tensor,
+        *,
+        value: TORCH_NUMBER_TYPES = 1,
     ) -> NestedTensors:
         return self._exec(torch.addcmul, tensor1, tensor2, value=value)
 
     def addcmul_(
-        self, tensor1: torch.Tensor, tensor2: torch.Tensor, *, value: NUMBER_TYPES = 1
+        self,
+        tensor1: torch.Tensor,
+        tensor2: torch.Tensor,
+        *,
+        value: TORCH_NUMBER_TYPES = 1,
     ) -> NestedTensors:
         return self._exec_inplace(torch.addcmul, tensor1, tensor2, value=value)
 
@@ -419,8 +440,8 @@ class NestedTensors:
         mat1: torch.Tensor,
         mat2: torch.Tensor,
         *,
-        beta: NUMBER_TYPES = 1,
-        alpha: NUMBER_TYPES = 1,
+        beta: TORCH_NUMBER_TYPES = 1,
+        alpha: TORCH_NUMBER_TYPES = 1,
     ) -> NestedTensors:
         return self._exec(torch.addmm, mat1, mat2, beta=beta, alpha=alpha)
 
