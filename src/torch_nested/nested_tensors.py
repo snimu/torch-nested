@@ -277,7 +277,7 @@ class NestedTensors:
     def _math_op(self, other: Any, op: Callable[[Any, Any], Any]) -> NestedTensors:
         data = copy.deepcopy(self.data)
 
-        def loop_body(t: torch.Tensor, o: torch.Tensor, i: int) -> None:
+        def loop_body(t: torch.Tensor, o: Any, i: int) -> None:
             try:
                 data[i] = op(t, o)
             except Exception as e:
