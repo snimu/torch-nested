@@ -196,42 +196,61 @@ def test__neg__() -> None:
 
 def test__pos__() -> None:
     tensors = NestedTensors(INPUT_DATA)
-    assert tensors == +tensors
+    assert (tensors == +tensors).all()
 
 
 class TestComparisons:
     """Tests for <, >, >=, <=."""
 
-    TENSORS = NestedTensors([torch.randn(3), torch.randn(3)])
     RANDN = torch.randn(3)
 
+    @property
+    def tensors(self) -> NestedTensors:
+        return NestedTensors([torch.randn(3), torch.randn(3)])
+
     def test__lt__(self) -> None:
-        tensors = copy.deepcopy(self.TENSORS)
+        tensors = self.tensors
         tensors__lt__ = tensors < self.RANDN
 
         for tensor, tensor_lt in zip(tensors, tensors__lt__):
             assert torch.all(tensor_lt == (tensor < self.RANDN))
 
     def test__le__(self) -> None:
-        tensors = copy.deepcopy(self.TENSORS)
+        tensors = self.tensors
         tensors__le__ = tensors <= self.RANDN
 
         for tensor, tensor_le in zip(tensors, tensors__le__):
             assert torch.all(tensor_le == (tensor <= self.RANDN))
 
     def test__gt__(self) -> None:
-        tensors = copy.deepcopy(self.TENSORS)
+        tensors = self.tensors
         tensors__gt__ = tensors > self.RANDN
 
         for tensor, tensor_gt in zip(tensors, tensors__gt__):
             assert torch.all(tensor_gt == (tensor > self.RANDN))
 
     def test__ge__(self) -> None:
-        tensors = copy.deepcopy(self.TENSORS)
+        tensors = self.tensors
         tensors__ge__ = tensors >= self.RANDN
 
         for tensor, tensor_ge in zip(tensors, tensors__ge__):
             assert torch.all(tensor_ge == (tensor >= self.RANDN))
+
+    def test__eq__(self) -> None:
+        tensors = self.tensors
+        tensors_control = copy.deepcopy(tensors)
+
+        assert (tensors == tensors_control).all()
+        assert not (tensors + 1 == tensors_control).any()
+        assert (tensors == tensors[0]).any()  # test comparison with torch.Tensor
+
+    def test__neq__(self) -> None:
+        tensors = self.tensors
+        tensors_control = copy.deepcopy(tensors)
+
+        assert not (tensors != tensors_control).all()
+        assert (tensors + 1 != tensors_control).any()
+        assert (tensors + 1 != tensors[0]).any()  # test comparison with torch.Tensor
 
 
 class TestMod:
@@ -549,7 +568,7 @@ class TestPow:
         tensors_control = NestedTensors(self.input_data)
         tensors **= 2
 
-        assert tensors != tensors_control
+        assert (tensors != tensors_control).all()
 
         for t, tc in zip(tensors, tensors_control):
             assert torch.all(t == (tc**2))

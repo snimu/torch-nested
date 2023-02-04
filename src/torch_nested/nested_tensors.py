@@ -241,6 +241,12 @@ class NestedTensors:
     def __ge__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t >= o)
 
+    def __eq__(self, other: Any) -> NestedTensors:  # type: ignore[override]
+        return self._math_op(other, op=lambda t, o: t == o)
+
+    def __ne__(self, other: Any) -> NestedTensors:  # type: ignore[override]
+        return self._math_op(other, op=lambda t, o: t != o)
+
     def __and__(self, other: Any) -> NestedTensors:
         return self._math_op(other, op=lambda t, o: t & o)
 
