@@ -1,3 +1,4 @@
+# pylint: disable=too-many-public-methods
 from __future__ import annotations
 
 import copy
@@ -392,6 +393,16 @@ class NestedTensors:
         alpha: NUMBER_TYPES = 1,
     ) -> NestedTensors:
         return self._exec_inplace(torch.addbmm, batch1, batch2, beta=beta, alpha=alpha)
+
+    def addcdiv(
+        self, tensor1: torch.Tensor, tensor2: torch.Tensor, *, value: NUMBER_TYPES = 1
+    ) -> NestedTensors:
+        return self._exec(torch.addcdiv, tensor1, tensor2, value=value)
+
+    def addcdiv_(
+        self, tensor1: torch.Tensor, tensor2: torch.Tensor, *, value: NUMBER_TYPES = 1
+    ) -> NestedTensors:
+        return self._exec_inplace(torch.addcdiv, tensor1, tensor2, value=value)
 
     def to(self, *args: Any, **kwargs: Any) -> NestedTensors:
         """
