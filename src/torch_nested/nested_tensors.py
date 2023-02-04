@@ -319,6 +319,20 @@ class NestedTensors:
     def element_sizes(self) -> list[int]:
         return [tensor.element_size() for tensor in self]
 
+    def all(self) -> bool:
+        res = self._math_op(None, op=lambda t, _: torch.all(t))
+        for t in res:
+            if not t:
+                return False
+        return True
+
+    def any(self) -> bool:
+        res = self._math_op(None, op=lambda t, _: torch.any(t))
+        for t in res:
+            if t:
+                return True
+        return False
+
     def abs(self) -> NestedTensors:
         return self._exec(torch.abs)
 

@@ -76,6 +76,30 @@ def test_empty() -> None:
     assert len(tensors) == 0
 
 
+class TestAllAny:
+    """Tests for all and any."""
+
+    ALL_TRUE = NestedTensors(
+        [torch.ones(2, dtype=torch.bool), torch.ones(2, dtype=torch.bool)]
+    )
+    SOME_TRUE = NestedTensors(
+        [torch.ones(2, dtype=torch.bool), torch.zeros(2, dtype=torch.bool)]
+    )
+    NONE_TRUE = NestedTensors(
+        [torch.zeros(2, dtype=torch.bool), torch.zeros(2, dtype=torch.bool)]
+    )
+
+    def test_all(self) -> None:
+        assert self.ALL_TRUE.all()
+        assert not self.SOME_TRUE.all()
+        assert not self.NONE_TRUE.all()
+
+    def test_any(self) -> None:
+        assert self.ALL_TRUE.any()
+        assert self.SOME_TRUE.any()
+        assert not self.NONE_TRUE.any()
+
+
 class TestAbs:
     """A class for testing the `abs`- and `abs_`-methods of `NestedTensors`."""
 
