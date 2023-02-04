@@ -278,6 +278,37 @@ class TestAcos:
         assert (tensors == tensors_control).all()
 
 
+class TestAddbmm:
+    """Tests for `addbmm` and `addbmm_`."""
+
+    @property
+    def batch(self) -> torch.Tensor:
+        return torch.ones((3, 3, 3))
+
+    @property
+    def tensors(self) -> NestedTensors:
+        return NestedTensors([torch.ones((3, 3)), torch.ones((3, 3))])
+
+    def test_addbmm(self) -> None:
+        tensors = self.tensors
+        tensors_addbmm = tensors.addbmm(self.batch, self.batch, beta=1.0, alpha=1.0)
+
+        for t, ta in zip(tensors, tensors_addbmm):
+            assert torch.all(
+                t.addbmm(self.batch, self.batch, beta=1.0, alpha=1.0) == ta
+            )
+
+    def test_addbmm_(self) -> None:
+        tensors = self.tensors
+        tensors_control = self.tensors
+        tensors.addbmm_(self.batch, self.batch, beta=1.0, alpha=1.0)
+
+        for t, tc in zip(tensors, tensors_control):
+            assert torch.all(
+                tc.addbmm(self.batch, self.batch, beta=1.0, alpha=1.0) == t
+            )
+
+
 class TestTo:
     """Tests for the `to`-method."""
 

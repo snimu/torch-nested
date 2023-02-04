@@ -373,6 +373,26 @@ class NestedTensors:
     ) -> NestedTensors:
         return self._exec_inplace(torch.add, other, alpha=alpha)
 
+    def addbmm(
+        self,
+        batch1: torch.Tensor,
+        batch2: torch.Tensor,
+        *,
+        beta: NUMBER_TYPES = 1,
+        alpha: NUMBER_TYPES = 1,
+    ) -> NestedTensors:
+        return self._exec(torch.addbmm, batch1, batch2, beta=beta, alpha=alpha)
+
+    def addbmm_(
+        self,
+        batch1: torch.Tensor,
+        batch2: torch.Tensor,
+        *,
+        beta: NUMBER_TYPES = 1,
+        alpha: NUMBER_TYPES = 1,
+    ) -> NestedTensors:
+        return self._exec_inplace(torch.addbmm, batch1, batch2, beta=beta, alpha=alpha)
+
     def to(self, *args: Any, **kwargs: Any) -> NestedTensors:
         """
         See [torch.Tensor.to]
