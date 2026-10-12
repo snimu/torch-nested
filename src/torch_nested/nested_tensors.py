@@ -85,7 +85,7 @@ class NestedTensors:
             )
             raise TypeError(what) from e
 
-    def __iter__(self) -> Generator[torch.Tensor, None, None]:
+    def __iter__(self) -> Generator[torch.Tensor]:
         for i in range(len(self)):
             yield self[i]
 
